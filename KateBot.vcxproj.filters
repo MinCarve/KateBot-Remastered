@@ -1,0 +1,169 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source Files\utils">
+      <UniqueIdentifier>{fedc97b3-6f12-4b77-bc0e-0f8f2ec41375}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\mem">
+      <UniqueIdentifier>{074ae9b8-0ff6-40a5-a182-f2c8427bff53}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\cheats">
+      <UniqueIdentifier>{606dee68-a5b0-456b-8456-4f34a8fff9df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ValveBSP">
+      <UniqueIdentifier>{d3ac3d7f-2fec-478b-92b0-129c8020d1cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\csgo">
+      <UniqueIdentifier>{e8e78c7a-72a1-43f5-9a1c-7d77019216ff}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="KateBot\main.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="KateBot\config.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="KateBot\offsets.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="KateBot\enums.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="KateBot\utils\Color.h">
+      <Filter>Source Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="KateBot\utils\console.h">
+      <Filter>Source Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="KateBot\utils\files.h">
+      <Filter>Source Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="KateBot\utils\MiscUtils.h">
+      <Filter>Source Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="KateBot\utils\ShootManager.h">
+      <Filter>Source Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="KateBot\mem\mem.h">
+      <Filter>Source Files\mem</Filter>
+    </ClInclude>
+    <ClInclude Include="KateBot\mem\module.h">
+      <Filter>Source Files\mem</Filter>
+    </ClInclude>
+    <ClInclude Include="KateBot\cheats\ActualAimbot.h">
+      <Filter>Source Files\cheats</Filter>
+    </ClInclude>
+    <ClInclude Include="KateBot\cheats\Bunnyhop.h">
+      <Filter>Source Files\cheats</Filter>
+    </ClInclude>
+    <ClInclude Include="KateBot\cheats\GlowESP.h">
+      <Filter>Source Files\cheats</Filter>
+    </ClInclude>
+    <ClInclude Include="KateBot\cheats\Skinchanger.h">
+      <Filter>Source Files\cheats</Filter>
+    </ClInclude>
+    <ClInclude Include="KateBot\cheats\Triggerbot.h">
+      <Filter>Source Files\cheats</Filter>
+    </ClInclude>
+    <ClInclude Include="KateBot\ValveBSP\BSPFile.hpp">
+      <Filter>Source Files\ValveBSP</Filter>
+    </ClInclude>
+    <ClInclude Include="KateBot\ValveBSP\BSPFlags.hpp">
+      <Filter>Source Files\ValveBSP</Filter>
+    </ClInclude>
+    <ClInclude Include="KateBot\ValveBSP\BSPParser.hpp">
+      <Filter>Source Files\ValveBSP</Filter>
+    </ClInclude>
+    <ClInclude Include="KateBot\ValveBSP\BSPStructure.hpp">
+      <Filter>Source Files\ValveBSP</Filter>
+    </ClInclude>
+    <ClInclude Include="KateBot\ValveBSP\Matrix.hpp">
+      <Filter>Source Files\ValveBSP</Filter>
+    </ClInclude>
+    <ClInclude Include="KateBot\ValveBSP\TraceRay.hpp">
+      <Filter>Source Files\ValveBSP</Filter>
+    </ClInclude>
+    <ClInclude Include="KateBot\csgo\csgo.h">
+      <Filter>Source Files\csgo</Filter>
+    </ClInclude>
+    <ClInclude Include="KateBot\csgo\entity.h">
+      <Filter>Source Files\csgo</Filter>
+    </ClInclude>
+    <ClInclude Include="KateBot\csgo\math.h">
+      <Filter>Source Files\csgo</Filter>
+    </ClInclude>
+    <ClInclude Include="KateBot\csgo\netvars.h">
+      <Filter>Source Files\csgo</Filter>
+    </ClInclude>
+    <ClInclude Include="KateBot\cheats\Chams.h">
+      <Filter>Source Files\cheats</Filter>
+    </ClInclude>
+    <ClInclude Include="KateBot\cheats\NightMode.h">
+      <Filter>Source Files\cheats</Filter>
+    </ClInclude>
+    <ClInclude Include="KateBot\cheats\FastReload.h">
+      <Filter>Source Files\cheats</Filter>
+    </ClInclude>
+    <ClInclude Include="KateBot\cheats\Radar.h">
+      <Filter>Source Files\cheats</Filter>
+    </ClInclude>
+    <ClInclude Include="KateBot\utils\Cray.h">
+      <Filter>Source Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="KateBot\utils\typedefs.h">
+      <Filter>Source Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="KateBot\cheats\Hitsound.h">
+      <Filter>Source Files\cheats</Filter>
+    </ClInclude>
+    <ClInclude Include="KateBot\cheats\RCS.h">
+      <Filter>Source Files\cheats</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="KateBot\config.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="KateBot\DLLMain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="KateBot\offsets.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="KateBot\utils\console.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="KateBot\utils\files.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="KateBot\utils\MiscUtils.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="KateBot\mem\mem.cpp">
+      <Filter>Source Files\mem</Filter>
+    </ClCompile>
+    <ClCompile Include="KateBot\ValveBSP\BSPFile.cpp">
+      <Filter>Source Files\ValveBSP</Filter>
+    </ClCompile>
+    <ClCompile Include="KateBot\ValveBSP\BSPParser.cpp">
+      <Filter>Source Files\ValveBSP</Filter>
+    </ClCompile>
+    <ClCompile Include="KateBot\ValveBSP\TraceRay.cpp">
+      <Filter>Source Files\ValveBSP</Filter>
+    </ClCompile>
+    <ClCompile Include="KateBot\csgo\csgo.cpp">
+      <Filter>Source Files\csgo</Filter>
+    </ClCompile>
+    <ClCompile Include="KateBot\csgo\entity.cpp">
+      <Filter>Source Files\csgo</Filter>
+    </ClCompile>
+    <ClCompile Include="KateBot\csgo\netvars.cpp">
+      <Filter>Source Files\csgo</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
