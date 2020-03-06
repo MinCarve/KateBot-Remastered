@@ -19,7 +19,7 @@ public:
 				if (!miscUtils->IsCSGOActiveWindow())
 					continue;
 
-				if (!cfg->skinchangerEnabled)
+				if (!cfg->skinchangerEnabled || cfg->StreamMode)
 					continue;
 
 				if (!csgo->IsInGame())
@@ -81,7 +81,7 @@ public:
 					}
 				}
 
-				if (GetAsyncKeyState(36)) csgo->ForceFullUpdate();
+				if (GetAsyncKeyState(VK_HOME)) csgo->ForceFullUpdate();
 
 				if (!cfg->general_skin.knife_enable) continue;
 

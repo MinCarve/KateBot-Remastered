@@ -16,6 +16,7 @@ public:
 	float ShotGunsAdaptiveSmoothMultiplier = 1.0f;
 	float LMGsAdaptiveSmoothMultiplier = 1.0f;
 
+	bool StreamMode = false;
 	bool RiflesAdaptiveSmooth = false;
 	bool PistolsAdaptiveSmooth = false;
 	bool SnipersAdaptiveSmooth = false;
@@ -27,6 +28,7 @@ public:
 	float spiralAimY = 3.7f;
 	bool faceitAim = false;
 	bool SaveTargetAim = false;
+	bool SprayFOV = false;
 	bool bspParsing = false;
 	bool skinchangerAutoUpdate = true;
 	bool glowEspEnabled = true;
@@ -89,6 +91,7 @@ public:
 	struct chams {
 		bool enabled;
 		bool health_based;
+		float brightness = 75.f;
 		Color enemycolor;
 		Color allycolor;
 		Color c4color;
@@ -127,7 +130,7 @@ private:
 		{ 4, "glock"} , { 7, "ak47" }, { 8, "aug" },
 		{ 9, "awp" }, { 10, "famas" }, { 11, "g3sg1" },
 		{13, "galil"}, { 14, "m249"}, {16, "m4a4"},
-		{17, "mac10"}, {19, "p90"}, {24, "ump45"},
+		{17, "mac10"}, {19, "p90"}, {23, "mp5-sd"}, {24, "ump45"},
 		{25, "xm1014"}, {26, "bizon"}, {27, "mag7"},
 		{28, "negev"}, {29, "sawed_off"}, {30, "tec9"},
 		{31, "zeus"}, {32, "p2000"}, {33, "mp7"},

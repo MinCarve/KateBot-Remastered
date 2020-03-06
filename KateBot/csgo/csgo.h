@@ -36,6 +36,7 @@ public:
 
 	int			GetLocalPlayer();
 	int 		GetMaxObjects();
+	int			GetMaxEntities();
 
 	int 		GetGameType();
 	

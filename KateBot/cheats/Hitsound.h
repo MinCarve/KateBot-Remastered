@@ -19,7 +19,7 @@ public:
 				if (!miscUtils->IsCSGOActiveWindow())
 					continue;
 
-				if (!cfg->hitsound)
+				if (!cfg->hitsound || cfg->StreamMode)
 					continue;
 
 				if (!csgo->IsInGame())

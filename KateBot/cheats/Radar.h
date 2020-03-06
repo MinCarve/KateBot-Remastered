@@ -16,19 +16,15 @@ public:
 				if (!miscUtils->IsCSGOActiveWindow())
 					continue;
 
-				if (!cfg->radar)
+				if (!cfg->radar || cfg->StreamMode)
 					continue;
 
 				if (!csgo->IsInGame())
 					continue;
 
-				for (int x = 1; x < csgo->GlobalVars().maxClients; x++)
-				{
-					Entity RadarPlayer = EntityList[x];
-
-					if (!RadarPlayer.IsDead() && !RadarPlayer.IsDormant())
-						mem->Write<int>(RadarPlayer.GetPointer() + ofs->m_bSpotted, 1);
-				}
+				for (int x = 1; x < csgo->GetMaxClients(); x++)
+					if (!EntityList[x].IsDead() && !EntityList[x].IsDormant())
+						mem->Write<int>(EntityList[x].GetPointer() + ofs->m_bSpotted, 1);
 			}
 		}
 		catch (...) {

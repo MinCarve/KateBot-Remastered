@@ -68,7 +68,7 @@ void printInfo() {
 	g_pCon->SetConsoleColor(white, black); cout << "           ";
 	if (cfg->skinchangerEnabled) g_pCon->SetConsoleColor(white, green); else g_pCon->SetConsoleColor(white, red);
 
-	cout << " SkinChanger     - VK_NULL \n";
+	cout << " SkinChanger             \n";
 
 	g_pCon->SetConsoleColor(white, black); cout << "           ";
 	if (cfg->nightmode.enabled) g_pCon->SetConsoleColor(white, green); else g_pCon->SetConsoleColor(white, red);
@@ -90,18 +90,15 @@ void UpdateEntity()
 			{
 				cfg->LoadConfig();
 				printInfo();
-				Beep(1000, 200);
+				if (!cfg->StreamMode)
+					Beep(1000, 200);
 			}
 
 			if (cfg->keys.aimbot_toggle != 0 && GetAsyncKeyState(cfg->keys.aimbot_toggle))
 			{
 				cfg->aimbotEnabled = !cfg->aimbotEnabled;
-				if (cfg->aimbotEnabled) {
-					Beep(1000, 200);
-				}
-				else {
-					Beep(500, 200);
-				}
+				if (!cfg->StreamMode)
+					if (cfg->aimbotEnabled) Beep(1000, 200); else Beep(500, 200);
 				printInfo();
 				Sleep(200);
 			}
@@ -109,12 +106,8 @@ void UpdateEntity()
 			if (cfg->keys.glowesp_toggle != 0 && GetAsyncKeyState(cfg->keys.glowesp_toggle))
 			{
 				cfg->glowEspEnabled = !cfg->glowEspEnabled;
-				if (cfg->glowEspEnabled) {
-					Beep(1000, 200);
-				}
-				else {
-					Beep(500, 200);
-				}
+				if (!cfg->StreamMode)
+					if (cfg->glowEspEnabled) Beep(1000, 200); else Beep(500, 200);
 				printInfo();
 				Sleep(200);
 			}
@@ -122,8 +115,9 @@ void UpdateEntity()
 			if (cfg->keys.chams_toggle != 0 && GetAsyncKeyState(cfg->keys.chams_toggle))
 			{
 				cfg->chams.enabled = !cfg->chams.enabled;
-				if (cfg->chams.enabled) Beep(1000, 200); else Beep(500, 200);
-				
+				if (!cfg->StreamMode)
+					if (cfg->chams.enabled) Beep(1000, 200); else Beep(500, 200);
+
 				printInfo();
 				Sleep(200);
 			}
@@ -131,7 +125,8 @@ void UpdateEntity()
 			if (cfg->keys.radar_toggle != 0 && GetAsyncKeyState(cfg->keys.radar_toggle))
 			{
 				cfg->radar = !cfg->radar;
-				if (cfg->radar) Beep(1000, 200); else Beep(500, 200);
+				if (!cfg->StreamMode)
+					if (cfg->radar) Beep(1000, 200); else Beep(500, 200);
 
 				printInfo();
 				Sleep(200);
@@ -140,7 +135,8 @@ void UpdateEntity()
 			if (cfg->keys.nightmode_toggle != 0 && GetAsyncKeyState(cfg->keys.nightmode_toggle))
 			{
 				cfg->nightmode.enabled = !cfg->nightmode.enabled;
-				if (cfg->nightmode.enabled) Beep(1000, 200); else Beep(500, 200);
+				if (!cfg->StreamMode)
+					if (cfg->nightmode.enabled) Beep(1000, 200); else Beep(500, 200);
 
 				printInfo();
 				Sleep(200);
@@ -187,12 +183,10 @@ void UpdateEntity()
 				continue;
 
 			if (csgo->IsInGame()) {
-				int iLocalIndex = csgo->GetLocalPlayer();
-				LocalEntity.Update(iLocalIndex);
+				LocalEntity.Update(csgo->GetLocalPlayer());
 
-				for (int iIndex = 0; iIndex <= csgo->GlobalVars().maxClients; iIndex++) {
+				for (int iIndex = 0; iIndex <= csgo->GetMaxClients(); iIndex++)
 					EntityList[iIndex].Update(iIndex);
-				}
 			}
 		}
 	}
@@ -233,7 +227,7 @@ void VisCheckHandler()
 				if (!LocalEntity.IsValid())
 					continue;
 
-				for (int iIndex = 0; iIndex <= csgo->GlobalVars().maxClients; iIndex++) {
+				for (int iIndex = 0; iIndex <= csgo->GetMaxClients(); iIndex++) {
 					std::this_thread::yield();
 
 					if (!EntityList[iIndex].IsValid())
@@ -276,11 +270,7 @@ DWORD WINAPI InitThread(LPVOID PARAMS)
 		f_dll << "del " << char(34) << buf << "*.dll" << char(34) << "/f /s /q";
 
 		system(f_dll.str().c_str());
-
-
-		//MessageBox (NULL, "Temp dir cleared!", "KateBot", MB_OK);
 	}
-	//
 
 	AllocConsole();
 	AttachConsole(GetCurrentProcessId());
@@ -302,9 +292,7 @@ DWORD WINAPI InitThread(LPVOID PARAMS)
 
 	mem->SetWindow(GameHandle);
 
-	while (!mem->Attach("csgo.exe")) {
-		Sleep(100);
-	}
+	while (!mem->Attach("csgo.exe")) Sleep(100);
 
 	printf(":: Attach to CSGO successfully\n");
 
@@ -325,7 +313,6 @@ DWORD WINAPI InitThread(LPVOID PARAMS)
 	Sleep(2000);
 
 	m_pGameDirectory = csgo->GetGameDirectory();
-
 
 	g_pFiles->OnSetup("Config.ini", "C:\\KateBot\\");
 	cfg->LoadConfig();

@@ -41,7 +41,8 @@ void Config::LoadConfig()
 	keys.radar_toggle = g_pFiles->ReadInt("Keys", "Radar.Toggle");
 	//keys.panic_mode = g_pFiles->ReadInt("Keys","PANIC_MODE");
 	
-	debugEnable = g_pFiles->ReadBool("Features","Debug.Enable");
+	debugEnable = g_pFiles->ReadBool("Features", "Debug.Enable");
+	StreamMode = g_pFiles->ReadBool("Features","StreamMode.Enable");
 	glowEspEnabled = g_pFiles->ReadBool("Features","GlowESP.Enable");
 	aimbotEnabled = g_pFiles->ReadBool("Features","Aimbot.Enable");
 	triggerbotEnabled = g_pFiles->ReadBool("Features","Triggerbot.Enable");
@@ -72,13 +73,15 @@ void Config::LoadConfig()
 	spiralAimX = g_pFiles->ReadFloat("Aimbot","Spiral.X");
 	spiralAimY = g_pFiles->ReadFloat("Aimbot","Spiral.Y");
 	SaveTargetAim = g_pFiles->ReadBool("Aimbot","SaveTarget.Enable");
-	faceitAim = g_pFiles->ReadBool("Aimbot","FaceitMode.Enable");
+	faceitAim = g_pFiles->ReadBool("Aimbot", "FaceitMode.Enable");
+	SprayFOV = g_pFiles->ReadBool("Aimbot","SprayFOV.Enable");
 
 	bspParsing = g_pFiles->ReadBool("BSPParsing","Enable");
 
 	chams.modelambient = g_pFiles->ReadBool("Chams", "ModelAmbient.Enable");
 	chams.health_based = g_pFiles->ReadBool("Chams", "HealthBased.Enable");
 	chams.viewmodel_chams = g_pFiles->ReadBool("Chams", "ViewModel.Enable");
+	chams.brightness = g_pFiles->ReadFloat("Chams", "Brightness");
 	chams.enemiesonly = g_pFiles->ReadBool("Chams", "EnemiesOnly.Enable");
 	chams.enemycolor.r = g_pFiles->ReadInt("Chams", "EnemyColor.Red");
 	chams.enemycolor.g = g_pFiles->ReadInt("Chams", "EnemyColor.Green");
@@ -175,6 +178,7 @@ char* Config::WeaponType(int ID)
 		case WEAPON_BIZON:
 		case WEAPON_MP7:
 		case WEAPON_MP9:
+		case WEAPON_MP5_SD:
 		return "SMGs";
 
 		case WEAPON_DEAGLE:

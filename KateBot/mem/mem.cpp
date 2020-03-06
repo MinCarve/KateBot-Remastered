@@ -15,69 +15,57 @@ Mem::~Mem()
 	Detach();
 }
 
-bool Mem::Attach( const std::string& ExeName )
+bool Mem::Attach(const std::string& ExeName)
 {
 	Detach();
 
-	if( ExeName.empty() )
-	{
-		return false;
-	}
+	if (ExeName.empty()) return false;
 
-	m_dwProcessId = GetProcessIdByName( ExeName );
+	m_dwProcessId = GetProcessIdByName(ExeName);
 
-	if( !m_dwProcessId )
-	{
-		return false;
-	}
+	if (!m_dwProcessId) return false;
 
-	m_hProcess = OpenProcess( PROCESS_ALL_ACCESS, FALSE, m_dwProcessId );
+	m_hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, m_dwProcessId);
 
-	if( !m_hProcess )
-	{
-		return false;
-	}
+	if (!m_hProcess) return false;
 
 	return DumpModList();
 }
 
 void Mem::Detach()
 {
-	if( m_hProcess )
-	{
-		CloseHandle( m_hProcess );
-	}
+	if (m_hProcess) CloseHandle(m_hProcess);
 
 	m_hProcess = NULL;
 	m_dwProcessId = NULL;
 
-	SAFE_DELETE_VECTOR( m_pModList );
+	SAFE_DELETE_VECTOR(m_pModList);
 }
 
-bool Mem::Read( DWORD_PTR dwAddress, LPVOID lpBuffer, DWORD_PTR dwSize )
+bool Mem::Read(DWORD_PTR dwAddress, LPVOID lpBuffer, DWORD_PTR dwSize)
 {
 	SIZE_T Out = NULL;
 
-	return ( ReadProcessMemory( m_hProcess, ( LPCVOID )dwAddress, lpBuffer, dwSize, &Out ) == TRUE );
+	return (ReadProcessMemory(m_hProcess, (LPCVOID)dwAddress, lpBuffer, dwSize, &Out) == TRUE);
 }
 
-bool Mem::Write( DWORD_PTR dwAddress, LPCVOID lpBuffer, DWORD_PTR dwSize )
+bool Mem::Write(DWORD_PTR dwAddress, LPCVOID lpBuffer, DWORD_PTR dwSize)
 {
 	SIZE_T Out = NULL;
 
-	return ( WriteProcessMemory( m_hProcess, ( LPVOID )dwAddress, lpBuffer, dwSize, &Out ) == TRUE );
+	return (WriteProcessMemory(m_hProcess, (LPVOID)dwAddress, lpBuffer, dwSize, &Out) == TRUE);
 }
 
-Module* Mem::GetModule( const std::string& ImageName )
+Module* Mem::GetModule(const std::string& ImageName)
 {
-	if( m_pModList.empty() )
+	if (m_pModList.empty())
 	{
 		return nullptr;
 	}
 
-	for( auto& pMod : m_pModList )
+	for (auto& pMod : m_pModList)
 	{
-		if( ImageName.compare( pMod->GetName() ) == 0 )
+		if (ImageName.compare(pMod->GetName()) == 0)
 		{
 			return pMod;
 		}
@@ -86,7 +74,7 @@ Module* Mem::GetModule( const std::string& ImageName )
 	return nullptr;
 }
 
-void Mem::SetWindow( HWND window )
+void Mem::SetWindow(HWND window)
 {
 	m_hWindow = window;
 }
@@ -96,52 +84,52 @@ HWND Mem::GetWindow()
 	return m_hWindow;
 }
 
-HMODULE Mem::LoadRemote( const std::string& ImageName )
+HMODULE Mem::LoadRemote(const std::string& ImageName)
 {
-	if( m_pModList.empty() )
+	if (m_pModList.empty())
 	{
 		return NULL;
 	}
 
-	for( auto& pMod : m_pModList )
+	for (auto& pMod : m_pModList)
 	{
-		if( ImageName.compare( pMod->GetName() ) == 0 )
+		if (ImageName.compare(pMod->GetName()) == 0)
 		{
-			return LoadLibrary( pMod->GetPath().c_str() );
+			return LoadLibrary(pMod->GetPath().c_str());
 		}
 	}
 
 	return NULL;
 }
 
-bool DataCompare( const BYTE* pData, const BYTE* pMask, const char* pszMask )
+bool DataCompare(const BYTE* pData, const BYTE* pMask, const char* pszMask)
 {
-	for( ; *pszMask; ++pszMask, ++pData, ++pMask )
+	for (; *pszMask; ++pszMask, ++pData, ++pMask)
 	{
-		if( *pszMask == 'x' && *pData != *pMask )
+		if (*pszMask == 'x' && *pData != *pMask)
 		{
 			return false;
 		}
 	}
 
-	return ( *pszMask == NULL );
+	return (*pszMask == NULL);
 }
 
-DWORD_PTR Mem::Scan( DWORD_PTR dwStart, DWORD_PTR dwSize, const char* pSignature, const char* pMask )
+DWORD_PTR Mem::Scan(DWORD_PTR dwStart, DWORD_PTR dwSize, const char* pSignature, const char* pMask)
 {
-	BYTE* pRemote = new BYTE[ dwSize ];	// Forgot to delete this after we're finshed with it, resulting in a memory leak
+	BYTE* pRemote = new BYTE[dwSize];	// Forgot to delete this after we're finshed with it, resulting in a memory leak
 
-	if( !Read( dwStart, pRemote, dwSize ) )
+	if (!Read(dwStart, pRemote, dwSize))
 	{
 		delete[] pRemote;
 		return NULL;
 	}
 
-	for( DWORD_PTR dwIndex = 0; dwIndex < dwSize; dwIndex++ ) {
-		if( DataCompare( ( const BYTE* )( pRemote + dwIndex ), ( const BYTE* )pSignature, pMask ) )
+	for (DWORD_PTR dwIndex = 0; dwIndex < dwSize; dwIndex++) {
+		if (DataCompare((const BYTE*)(pRemote + dwIndex), (const BYTE*)pSignature, pMask))
 		{
 			delete[] pRemote;
-			return ( dwStart + dwIndex );
+			return (dwStart + dwIndex);
 		}
 	}
 	delete[] pRemote;
@@ -177,7 +165,7 @@ DWORD_PTR Mem::FindPattern(Module* mod, const char* pattern)
 			::free(header);
 			return false;
 		}
-		const IMAGE_NT_HEADERS *pImageHdr = (const IMAGE_NT_HEADERS*)((uint8_t*)pDosHdr + pDosHdr->e_lfanew);
+		const IMAGE_NT_HEADERS* pImageHdr = (const IMAGE_NT_HEADERS*)((uint8_t*)pDosHdr + pDosHdr->e_lfanew);
 
 		if (pImageHdr->Signature != IMAGE_NT_SIGNATURE)
 		{
@@ -201,7 +189,7 @@ DWORD_PTR Mem::FindPattern(Module* mod, const char* pattern)
 		return false;
 	};
 
-	uintptr_t base; size_t size; 
+	uintptr_t base; size_t size;
 	if (!get_text_section(base, size))
 	{
 		base = mod->GetImage();
@@ -226,21 +214,21 @@ DWORD_PTR Mem::FindPattern(Module* mod, const char* pattern)
 bool Mem::DumpModList()
 {
 	m_pModList.clear();
-	
-	HANDLE hSnapshot = CreateToolhelp32Snapshot( TH32CS_SNAPMODULE, m_dwProcessId );
 
-	if( hSnapshot == INVALID_HANDLE_VALUE )
+	HANDLE hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, m_dwProcessId);
+
+	if (hSnapshot == INVALID_HANDLE_VALUE)
 	{
 		return false;
 	}
 
 	MODULEENTRY32 Entry = { NULL };
 
-	Entry.dwSize = sizeof( MODULEENTRY32 );
+	Entry.dwSize = sizeof(MODULEENTRY32);
 
-	if( !Module32First( hSnapshot, &Entry ) )
+	if (!Module32First(hSnapshot, &Entry))
 	{
-		CloseHandle( hSnapshot );
+		CloseHandle(hSnapshot);
 		return false;
 	}
 
@@ -248,48 +236,48 @@ bool Mem::DumpModList()
 
 	do
 	{
-		char szPath[ MAX_PATH ] = { NULL };
+		char szPath[MAX_PATH] = { NULL };
 
-		GetModuleFileNameEx( m_hProcess, Entry.hModule, szPath, MAX_PATH );
+		GetModuleFileNameEx(m_hProcess, Entry.hModule, szPath, MAX_PATH);
 
-		pMod = new Module( ( DWORD_PTR )Entry.hModule, ( DWORD_PTR )Entry.modBaseSize, Entry.szModule, szPath );
-		m_pModList.push_back( pMod );
-	} while( Module32Next( hSnapshot, &Entry ) );
+		pMod = new Module((DWORD_PTR)Entry.hModule, (DWORD_PTR)Entry.modBaseSize, Entry.szModule, szPath);
+		m_pModList.push_back(pMod);
+	} while (Module32Next(hSnapshot, &Entry));
 
-	CloseHandle( hSnapshot );
+	CloseHandle(hSnapshot);
 
 	return !m_pModList.empty();
 }
 
-DWORD Mem::GetProcessIdByName( const std::string& name )
+DWORD Mem::GetProcessIdByName(const std::string& name)
 {
-	HANDLE hSnapshot = CreateToolhelp32Snapshot( TH32CS_SNAPPROCESS, NULL );
+	HANDLE hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, NULL);
 
-	if( hSnapshot == INVALID_HANDLE_VALUE )
+	if (hSnapshot == INVALID_HANDLE_VALUE)
 	{
 		return NULL;
 	}
 
 	PROCESSENTRY32 Entry = { NULL };
 
-	Entry.dwSize = sizeof( PROCESSENTRY32 );
+	Entry.dwSize = sizeof(PROCESSENTRY32);
 
-	if( !Process32First( hSnapshot, &Entry ) )
+	if (!Process32First(hSnapshot, &Entry))
 	{
-		CloseHandle( hSnapshot );
+		CloseHandle(hSnapshot);
 		return NULL;
 	}
 
 	do
 	{
-		if( name.compare( Entry.szExeFile ) == 0 )
+		if (name.compare(Entry.szExeFile) == 0)
 		{
 			break;
 		}
-	} while( Process32Next( hSnapshot, &Entry ) );
+	} while (Process32Next(hSnapshot, &Entry));
 
 
-	CloseHandle( hSnapshot );
+	CloseHandle(hSnapshot);
 
 	return Entry.th32ProcessID;
 }

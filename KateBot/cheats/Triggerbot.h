@@ -65,7 +65,7 @@ private:
 	{
 		int IncrossIndex = mem->Read<int>(LocalEntity.GetPointer() + ofs->m_iCrossHairID);
 		if (IncrossIndex > 0 && IncrossIndex < 65) {
-			for (int i = 0; i < csgo->GlobalVars().maxClients; i++) {
+			for (int i = 0; i < csgo->GetMaxClients(); i++) {
 				if (EntityList[i].GetIndex() == IncrossIndex)
 					if (EntityList[i].GetHealth() > 0 && !csgo->IsInMyTeam(EntityList[i].GetPointer()))
 						return i;
@@ -83,7 +83,7 @@ private:
 		PunchAngles.z = 0.0f;
 		current -= PunchAngles * 2;
 
-		for (int i = 0; i < csgo->GlobalVars().maxClients; i++) {
+		for (int i = 0; i < csgo->GetMaxClients(); i++) {
 			if (!csgo->IsInMyTeam(EntityList[i].GetPointer()))
 				continue;
 

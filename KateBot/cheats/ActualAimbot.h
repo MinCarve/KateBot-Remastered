@@ -12,7 +12,12 @@ public:
 	int GetPlayerClosestToCrosshair(int bone)
 	{
 		int index = -1;
-		float best = fov;
+		float best = 2.f;
+
+		if (cfg->SprayFOV && LocalEntity.GetShotsFired() > 2)
+			best = fov + (LocalEntity.GetShotsFired() * 0.050);
+		else
+			best = fov;
 
 		if (SaveTargetAim)
 		{
@@ -20,7 +25,7 @@ public:
 				return m_Target;
 		}
 
-		for (int i = 0; i < csgo->GlobalVars().maxClients; i++) {
+		for (int i = 0; i < csgo->GetMaxClients(); i++) {
 
 			if (csgo->IsInMyTeam(EntityList[i].GetPointer()))
 				continue;
@@ -50,10 +55,15 @@ public:
 	{
 		int index = -1;
 		int bestBone = -1;
+		float maxfov = 2.f;
 
-		float maxfov = fov;
-		const int size = 6;
-		int bones[size] = { 8,7,6,5,4,3 };
+		if (cfg->SprayFOV && LocalEntity.GetShotsFired() > 2)
+			maxfov = fov + (LocalEntity.GetShotsFired() * 0.050);
+		else
+			maxfov = fov;
+
+		const int size = 15;
+		int bones[size] = { 8,7,6,5,4,3,0,69,63,73,74,70,67,68,64 };
 
 		if (SaveTargetAim)
 		{
@@ -61,7 +71,7 @@ public:
 				return m_Target;
 		}
 
-		for (int i = 0; i < csgo->GlobalVars().maxClients; i++) {
+		for (int i = 0; i < csgo->GetMaxClients(); i++) {
 
 			if (csgo->IsInMyTeam(EntityList[i].GetPointer()))
 				continue;
@@ -74,9 +84,9 @@ public:
 
 			Vector ViewAngles, PunchAngles;
 			csgo->GetViewAngles(ViewAngles);
-			PunchAngles = LocalEntity.GetPunchAngles();
+			/*PunchAngles = LocalEntity.GetPunchAngles();
 			PunchAngles.z = 0.0f;
-			ViewAngles -= PunchAngles * 2;
+			ViewAngles -= PunchAngles * 2;*/
 
 			for (int num = 0; num < size; num++) {
 				float fov = GetFov(ViewAngles, LocalEntity.GetEyePosition(), EntityList[i].GetBonePosition(bones[num]));
@@ -90,10 +100,7 @@ public:
 
 		if (index != -1)
 		{
-			if (TargetBone == -1)
-			{
-				TargetBone = bestBone;
-			}
+			if (TargetBone == -1) TargetBone = bestBone;
 			return index;
 		}
 		else
@@ -297,11 +304,13 @@ public:
 		ViewAngles.Normalize();
 
 		// RCS 
-		Vector PunchAngles = LocalEntity.GetPunchAngles();
-		PunchAngles.z = 0.0f;
-		ViewAngles -= PunchAngles * rcsScale;
+		if (LocalEntity.GetShotsFired() > 2) {
+			Vector PunchAngles = LocalEntity.GetPunchAngles();
+			PunchAngles.z = 0.0f;
+			ViewAngles -= PunchAngles * (LocalEntity.GetShotsFired() < 6 ? 3.f : rcsScale);
 
-		ViewAngles.Normalize();
+			ViewAngles.Normalize();
+		}
 
 		float SMOOTH_VALUE = GetSmoothValue(ViewAngles);
 		if (!cfg->spiralAim)
@@ -409,7 +418,6 @@ public:
 				int work = LocalEntity.GetShotsFired();
 
 				anglesToAim = GetAimbotAngles();
-
 
 				if (IsKillDelay()) {
 					g_Target = -1;

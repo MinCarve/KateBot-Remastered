@@ -18,7 +18,7 @@ public:
 				if (!miscUtils->IsCSGOActiveWindow())
 					continue;
 
-				if (!cfg->nightmode.enabled) {
+				if (!cfg->nightmode.enabled || cfg->StreamMode) {
 					if (NeedUpdate) {
 						csgo->ForceFullUpdate();
 						NeedUpdate = false;
@@ -31,14 +31,18 @@ public:
 
 				NeedUpdate = true;
 
-				int toneMapCIndex = mem->Read<int>(LocalEntity.GetPointer() + ofs->m_hTonemapController) & 0xFFF;
-				DWORD toneMapHandle = mem->Read<DWORD>(client->GetImage() + ofs->m_dwEntityList + (toneMapCIndex - 1) * 0x10);
+				for (int x = 0; x < csgo->GetMaxEntities(); x++)
+				{
+					DWORD Entity = mem->Read<DWORD>(client->GetImage() + ofs->m_dwEntityList + x * 0x10);
+					if (csgo->GetClassID(Entity) != CEnvTonemapController) continue;
 
-				mem->Write<float>(toneMapHandle + ofs->m_bUseCustomAutoExposureMax, .2f);
-				mem->Write<float>(toneMapHandle + ofs->m_flCustomBloomScale, .2f);
+					mem->Write<byte>(Entity + ofs->m_bUseCustomAutoExposureMax, 1);
+					mem->Write<byte>(Entity + ofs->m_bUseCustomAutoExposureMin, 1);
+					mem->Write<float>(Entity + ofs->m_flCustomBloomScale, .2f);
 
-				mem->Write<float>(toneMapHandle + ofs->m_flCustomAutoExposureMin, (float)(cfg->nightmode.amount * 0.01));
-				mem->Write<float>(toneMapHandle + ofs->m_flCustomAutoExposureMax, (float)(cfg->nightmode.amount * 0.01));
+					mem->Write<float>(Entity + ofs->m_flCustomAutoExposureMin, (float)(cfg->nightmode.amount * 0.001));
+					mem->Write<float>(Entity + ofs->m_flCustomAutoExposureMax, (float)(cfg->nightmode.amount * 0.001));
+				}
 			}
 		}
 		catch (...) {

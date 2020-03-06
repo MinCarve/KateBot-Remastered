@@ -33,9 +33,10 @@ bool Engine::IsTeamSelected()
 
 bool Engine::IsInMyTeam(DWORD Entity)
 {
-	return csgo->IsDangerZone() ?
-		(LocalEntity.GetSurvivalTeam() > -1 && LocalEntity.GetSurvivalTeam() == mem->Read<int>(Entity + ofs->m_nSurvivalTeam)) :
-		(mem->Read<int>(Entity + ofs->m_iTeamNum) == LocalEntity.GetTeamNum());
+	if (csgo->IsDangerZone())
+		return (LocalEntity.GetSurvivalTeam() == -1) ? false : (LocalEntity.GetSurvivalTeam() == mem->Read<int>(Entity + ofs->m_nSurvivalTeam));
+	else
+		return mem->Read<int>(Entity + ofs->m_iTeamNum) == LocalEntity.GetTeamNum();
 }
 
 bool Engine::IsDangerZone()
@@ -58,6 +59,11 @@ int Engine::GetLocalPlayer()
 int Engine::GetMaxObjects()
 {
 	return mem->Read<int>(client->GetImage() + ofs->m_dwGlowObject + 0x4);
+}
+
+int Engine::GetMaxEntities()
+{
+	return mem->Read<int>(client->GetImage() + ofs->m_dwEntityList + 0x4);
 }
 
 void Engine::GetViewAngles( Vector& viewangles )
@@ -176,13 +182,9 @@ float Engine::GetInterpolationAmount()
 	return GlobalVars().interpolation_amount;
 }
 
-int Engine::GetClassID(DWORD adr)
+int Engine::GetClassID(DWORD Entity)
 {
-	int vt = mem->Read<int>(adr + 0x8);	// Vtable
-	int fn = mem->Read<int>(vt + 2 * 0x4);	// Function
-	int cls = mem->Read<int>(fn + 0x1);	// Class
-	int clsn = mem->Read<int>(cls + 8);	// Class Name
-	return mem->Read<int>(cls + 20);	// ClassID
+	return mem->Read<int>(mem->Read<int>(mem->Read<int>(mem->Read<int>(Entity + 0x8) + 0x8) + 0x1) + 0x14);
 }
 
 char* Engine::GetClassNameFromPlayer(DWORD adr)

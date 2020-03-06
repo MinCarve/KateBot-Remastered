@@ -21,7 +21,7 @@ public:
 				if (!miscUtils->IsCSGOActiveWindow())
 					continue;
 
-				if (!cfg->glowEspEnabled)
+				if (!cfg->glowEspEnabled || cfg->StreamMode)
 					continue;
 
 				if (!csgo->IsInGame())
@@ -32,18 +32,16 @@ public:
 
 				for (int g = 0; g < csgo->GetMaxObjects(); g++)
 				{
-					DWORD EntityBase = GlowPointer + (g * 0x38);
+					DWORD EntityBase = GlowPointer + (g * sizeof(GlowObjectDefinition_t));
 
 					GlowObject = mem->Read<GlowObjectDefinition_t>(EntityBase);
 
 					if (GlowPointer != NULL && GlowObject.Entity != NULL)
 					{
-						int ClassID = mem->Read<int>(mem->Read<int>(mem->Read<int>(mem->Read<int>(GlowObject.Entity + 0x8) + 0x8) + 0x1) + 0x14);
+						int ClassID = csgo->GetClassID(GlowObject.Entity);
 
 						if (ClassID == CCSPlayer) {
-							bool IsDormant = mem->Read<bool>(GlowObject.Entity + ofs->m_bDormant);
-
-							if (!IsDormant)
+							if (!mem->Read<bool>(GlowObject.Entity + ofs->m_bDormant))
 							{
 								int TeamNum = mem->Read<int>(GlowObject.Entity + ofs->m_iTeamNum);
 
@@ -63,7 +61,8 @@ public:
 											if (Health < 13)
 												DrawGlow(EntityBase, ColorESP::Colors->White(cfg->glowesp.color.a));
 											else
-												DrawGlow(EntityBase, ColorESP::Colors->CfgColor(Color{ (float)((100 - Health) * (255 / 100)), (float)(Health * (255 / 100)), 0, cfg->glowesp.color.a }));
+												DrawGlow(EntityBase, ColorESP::Colors->CfgColor(Color{ (float)(abs((int)(255 - (Health * 2.55)))), 
+												(float)(255 - abs((int)(255 - (Health * 2.55)))), 0, cfg->glowesp.color.a }));
 										}
 										else
 											DrawGlow(EntityBase, ColorESP::Colors->CfgColor(cfg->glowesp.color));
@@ -72,10 +71,9 @@ public:
 							}
 						}
 						else if (ClassID == CBaseCSGrenadeProjectile) {
-							char ModelName[64] = {};
-							ReadProcessMemory(mem->m_hProcess, (LPCVOID)(mem->Read<DWORD>(GlowObject.Entity + 0x6C) + 0x4), ModelName, sizeof(ModelName), NULL);
+							mem->Read(mem->Read<DWORD>(GlowObject.Entity + 0x6C) + 0x4, this->ModelName, sizeof(char[64]));
 
-							std::string str(ModelName);
+							std::string str(this->ModelName);
 
 							if (str.find("flashbang_dropped.mdl") != std::string::npos)
 								DrawGlow(EntityBase, ColorESP::Colors->White());
@@ -83,16 +81,15 @@ public:
 								DrawGlow(EntityBase, ColorESP::Colors->Red());
 						}
 						else if (ClassID == CEconEntity && LocalEntity.GetTeamNum() == 3) {
-							char ModelName[64] = {};
-							ReadProcessMemory(mem->m_hProcess, (LPCVOID)(mem->Read<DWORD>(GlowObject.Entity + 0x6C) + 0x4), ModelName, sizeof(ModelName), NULL);
+							mem->Read(mem->Read<DWORD>(GlowObject.Entity + 0x6C) + 0x4, this->ModelName, sizeof(char[64]));
 
-							std::string str(ModelName);
+							std::string str(this->ModelName);
 
 							if (str.find("defuser.mdl") != std::string::npos)
 								DrawGlow(EntityBase, ColorESP::Colors->Green(150));
 						}
 						else if (ClassID == CPlantedC4) {
-							float BombTime = mem->Read<float>(GlowObject.Entity + ofs->m_flC4Blow) - csgo->GlobalVars().curtime;
+							float BombTime = mem->Read<float>(GlowObject.Entity + ofs->m_flC4Blow) - csgo->GetCurTime();
 							BombTime = BombTime < 0.f ? 0.f : BombTime;
 
 							if (BombTime > 20)
@@ -120,7 +117,7 @@ public:
 	}
 
 private:
-
+	char ModelName[64];
 	int indexBomb = -1;
 	bool isDefusing = false;
 	ColorESP PlantedC4Color = ColorESP(0, 0, 0, 0);

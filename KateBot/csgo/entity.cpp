@@ -208,6 +208,7 @@ EWeaponType Entity::GetWeaponType(int id)
 	case WEAPON_BIZON:
 	case WEAPON_MP7:
 	case WEAPON_MP9:
+	case WEAPON_MP5_SD:
 		return EWeaponType::WeapType_SMG;
 
 	case WEAPON_DEAGLE:
@@ -301,7 +302,9 @@ bool Entity::IsValid()
 	if (!GetBoneMatrix())
 		return false;
 
-	if (!GetTeamNum())
+	if (csgo->IsDangerZone() && !GetSurvivalTeam())
+		return false;
+	else if(!GetTeamNum())
 		return false;
 
 	if (IsDead())
