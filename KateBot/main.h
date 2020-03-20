@@ -70,6 +70,8 @@
 #include "CSGO\csgo.h"
 #include "CSGO\entity.h"
 
+#include "Cheats\cvar_mgr.hpp"
+
 // Utils
 #include "Utils\files.h"
 #include "Utils\console.h"
@@ -80,13 +82,15 @@
 
 // Cheats
 #include "Cheats\ActualAimbot.h"
-//#include "Cheats\RCS.h"
+#include "Cheats\AspectRatio.h"
 #include "Cheats\GlowESP.h"
+#include "Cheats\GrenadePrediction.h"
 #include "Cheats\Triggerbot.h"
 #include "Cheats\Bunnyhop.h"
 #include "Cheats\Skinchanger.h"
+#include "Cheats\RecoilCrosshair.h"
+#include "Cheats\SkyBoxChanger.h"
 #include "Cheats\Chams.h"
 #include "Cheats\Radar.h"
 #include "Cheats\NightMode.h"
 #include "Cheats\FastReload.h"
-#include "Cheats\Hitsound.h"

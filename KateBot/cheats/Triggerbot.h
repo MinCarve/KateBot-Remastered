@@ -84,19 +84,28 @@ private:
 		current -= PunchAngles * 2;
 
 		for (int i = 0; i < csgo->GetMaxClients(); i++) {
-			if (!csgo->IsInMyTeam(EntityList[i].GetPointer()))
+			if (csgo->IsInMyTeam(EntityList[i].GetPointer()))
 				continue;
 
 			if (!EntityList[i].IsValid())
 				continue;
 
-			if (InBone(current, i, 8, 2))
+			/*if (InBone(current, i, 8, 2))
 				return true;
 
 			if (InBone(current, i, 6, 2))
 				return true;
 
 			if (InBone(current, i, 4, 2))
+				return true;*/
+
+			if (InBone(current, LocalEntity.GetEyePosition(), EntityList[i].GetBonePosition(8)))
+				return true;
+
+			if (InBone(current, LocalEntity.GetEyePosition(), EntityList[i].GetBonePosition(6)))
+				return true;
+
+			if (InBone(current, LocalEntity.GetEyePosition(), EntityList[i].GetBonePosition(4)))
 				return true;
 
 		}
@@ -132,25 +141,63 @@ private:
 		return false;
 	}*/
 
-	bool InBone(Vector& current, int m_target, int bone, float fov)
+	void MakeVector(Vector angle, Vector& vector)
 	{
-		auto direction = EntityList[m_target].GetBonePosition(bone) - LocalEntity.GetEyePosition();
-		VectorNormalize(direction);
-
-		auto target = VectorAngles(direction);
-		ClampAngles(target);
-
-		Vector v_dist = LocalEntity.GetOrigin() - EntityList[m_target].GetOrigin();
-		auto distance = FastSQRT((v_dist.x * v_dist.x) + (v_dist.y * v_dist.y) + (v_dist.z * v_dist.z));
-
-		// modify 20.f as needed, depending on bone, random atm
-		if (CanHit(current, target, distance, fov))
-		{
-			return true;
-		}
-
-		return false;
+		float pitch = float(angle[0] * M_PI / 180);
+		float yaw = float(angle[1] * M_PI / 180);
+		float tmp = float(cos(pitch));
+		vector.x = float(-tmp * -cos(yaw));
+		vector.y = float(sin(yaw) * tmp);
+		vector.z = float(-sin(pitch));
 	}
+
+	bool InBone(Vector angle, Vector src, Vector dst)
+	{
+		Vector ang, aim;
+		ang = CalcAngle(src, dst);
+		MakeVector(angle, aim);
+		MakeVector(ang, ang);
+
+		float mag = FastSQRT(pow(aim.x, 2) + pow(aim.y, 2) + pow(aim.z, 2));
+		float u_dot_v = aim.DotProduct(ang);
+
+		return (RAD2DEG(acos(u_dot_v / (pow(mag, 2)))) < cfg->triggerbot.fov);
+	}
+
+	Vector CalcAngle(Vector src, Vector dst)
+	{
+		Vector ret;
+		Vector vDelta = src - dst;
+		float fHyp = FastSQRT((vDelta.x * vDelta.x) + (vDelta.y * vDelta.y));
+
+		ret.x = (atanf(vDelta.z / fHyp)) * (180.0f / (float)M_PI);
+		ret.y = (atanf(vDelta.y / vDelta.x)) * (180.0f / (float)M_PI);
+
+		if (vDelta.x >= 0.0f)
+			ret.y += 180.0f;
+
+		return ret;
+	}
+
+	//bool InBone(Vector& current, int m_target, int bone, float fov)
+	//{
+	//	auto direction = EntityList[m_target].GetBonePosition(bone) - LocalEntity.GetEyePosition();
+	//	VectorNormalize(direction);
+
+	//	auto target = VectorAngles(direction);
+	//	ClampAngles(target);
+
+	//	Vector v_dist = LocalEntity.GetOrigin() - EntityList[m_target].GetOrigin();
+	//	auto distance = FastSQRT((v_dist.x * v_dist.x) + (v_dist.y * v_dist.y) + (v_dist.z * v_dist.z));
+
+	//	// modify 20.f as needed, depending on bone, random atm
+	//	if (CanHit(current, target, distance, fov))
+	//	{
+	//		return true;
+	//	}
+
+	//	return false;
+	//}
 
 	bool CanHit(Vector current, Vector target, float distance, float max)
 	{

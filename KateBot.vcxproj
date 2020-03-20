@@ -11,16 +11,19 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="cvar_mgr.hpp" />
     <ClInclude Include="KateBot\cheats\ActualAimbot.h" />
+    <ClInclude Include="KateBot\cheats\AspectRatio.h" />
     <ClInclude Include="KateBot\cheats\Bunnyhop.h" />
     <ClInclude Include="KateBot\cheats\Chams.h" />
     <ClInclude Include="KateBot\cheats\FastReload.h" />
     <ClInclude Include="KateBot\cheats\GlowESP.h" />
-    <ClInclude Include="KateBot\cheats\Hitsound.h" />
+    <ClInclude Include="KateBot\cheats\GrenadePrediction.h" />
     <ClInclude Include="KateBot\cheats\NightMode.h" />
     <ClInclude Include="KateBot\cheats\Radar.h" />
-    <ClInclude Include="KateBot\cheats\RCS.h" />
+    <ClInclude Include="KateBot\cheats\RecoilCrosshair.h" />
     <ClInclude Include="KateBot\cheats\Skinchanger.h" />
+    <ClInclude Include="KateBot\cheats\SkyBoxChanger.h" />
     <ClInclude Include="KateBot\cheats\Triggerbot.h" />
     <ClInclude Include="KateBot\config.h" />
     <ClInclude Include="KateBot\csgo\csgo.h" />
@@ -47,6 +50,7 @@
     <ClInclude Include="KateBot\ValveBSP\TraceRay.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="KateBot\cheats\cvar_mgr.cpp" />
     <ClCompile Include="KateBot\config.cpp" />
     <ClCompile Include="KateBot\csgo\csgo.cpp" />
     <ClCompile Include="KateBot\csgo\entity.cpp" />
@@ -116,7 +120,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_WINDOWS;_USRDLL;KATEBOT_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -127,7 +131,7 @@
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;winmm.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

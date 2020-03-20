@@ -5,7 +5,7 @@
 
 class NightMode {
 public:
-	bool NeedUpdate = true;
+	bool NeedUpdate = false;
 
 	void Start() {
 		try {
@@ -31,18 +31,13 @@ public:
 
 				NeedUpdate = true;
 
-				for (int x = 0; x < csgo->GetMaxEntities(); x++)
-				{
-					DWORD Entity = mem->Read<DWORD>(client->GetImage() + ofs->m_dwEntityList + x * 0x10);
-					if (csgo->GetClassID(Entity) != CEnvTonemapController) continue;
+				DWORD hTonemap = mem->Read<DWORD>(LocalEntity.GetPointer() + ofs->m_hTonemapController) & 0xFFF;
+				DWORD pEntity = mem->Read<DWORD>(client->GetImage() + ofs->m_dwEntityList + (hTonemap - 1) * 0x10);
 
-					mem->Write<byte>(Entity + ofs->m_bUseCustomAutoExposureMax, 1);
-					mem->Write<byte>(Entity + ofs->m_bUseCustomAutoExposureMin, 1);
-					mem->Write<float>(Entity + ofs->m_flCustomBloomScale, .2f);
-
-					mem->Write<float>(Entity + ofs->m_flCustomAutoExposureMin, (float)(cfg->nightmode.amount * 0.001));
-					mem->Write<float>(Entity + ofs->m_flCustomAutoExposureMax, (float)(cfg->nightmode.amount * 0.001));
-				}
+				mem->Write<bool>(pEntity + ofs->m_bUseCustomAutoExposureMin, true);
+				mem->Write<bool>(pEntity + ofs->m_bUseCustomAutoExposureMax, true);
+				mem->Write<float>(pEntity + ofs->m_flCustomAutoExposureMin, cfg->nightmode.amount);
+				mem->Write<float>(pEntity + ofs->m_flCustomAutoExposureMax, cfg->nightmode.amount);
 			}
 		}
 		catch (...) {

@@ -5,8 +5,8 @@
 
 class Chams {
 public:
-	bool NeedUpdateChams = true;
-	bool NeedUpdateModelAmbient = true;
+	bool NeedUpdateChams = false;
+	bool NeedUpdateModelAmbient = false;
 
 	~Chams() {
 		NeedUpdateModelAmbient = true;
@@ -38,7 +38,7 @@ public:
 				ColorESP EnemyColor = ColorESP::Colors->CfgColor(cfg->chams.enemycolor);
 				ColorESP AllyColor = ColorESP::Colors->CfgColor(cfg->chams.allycolor);
 
-				float balance_brightness_with_nm = cfg->nightmode.enabled ? (float)((100 - (100 * (cfg->nightmode.amount * 0.001))) * 0.5) : 0;
+				float balance_brightness_with_nm = cfg->nightmode.enabled ? (float)((100 - (100 * (cfg->nightmode.amount * 0.001))) * 0.2) : 0;
 				ColorESP BalanceBrightness = ColorESP::Colors->CfgColor(Color{ (255.f / (cfg->chams.brightness / 10.f)) + balance_brightness_with_nm,
 					(255.f / (cfg->chams.brightness / 10.f)) + balance_brightness_with_nm,
 					(255.f / (cfg->chams.brightness / 10.f)) + balance_brightness_with_nm, 255.f });
@@ -60,7 +60,7 @@ public:
 							continue;
 						}
 
-						if (mem->Read<int>(Entity + ofs->m_dwIndex) == mem->Read<int>(CSPlayerResource + ofs->m_iPlayerC4))
+						if (!csgo->IsDangerZone() && mem->Read<int>(Entity + ofs->m_dwIndex) == mem->Read<int>(CSPlayerResource + ofs->m_iPlayerC4))
 							mem->Write(Entity + 0x70, ColorESP::Colors->CfgColor(cfg->chams.c4playercolor));
 						else if (mem->Read<bool>(Entity + ofs->m_bIsDefusing))
 							mem->Write(Entity + 0x70, ColorESP::Colors->CfgColor(cfg->chams.defusecolor));

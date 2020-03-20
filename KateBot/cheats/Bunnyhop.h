@@ -45,7 +45,7 @@ public:
 	}
 
 private:
-
+	Vector prev_strafe_angle;
 
 };
 

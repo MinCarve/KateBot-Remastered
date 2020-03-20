@@ -14,7 +14,7 @@ public:
 		int index = -1;
 		float best = 2.f;
 
-		if (cfg->SprayFOV && LocalEntity.GetShotsFired() > 2)
+		if (cfg->SprayFOV && LocalEntity.GetShotsFired() > 1)
 			best = fov + (LocalEntity.GetShotsFired() * 0.050);
 		else
 			best = fov;
@@ -57,19 +57,17 @@ public:
 		int bestBone = -1;
 		float maxfov = 2.f;
 
-		if (cfg->SprayFOV && LocalEntity.GetShotsFired() > 2)
+		if (cfg->SprayFOV && LocalEntity.GetShotsFired() > 1)
 			maxfov = fov + (LocalEntity.GetShotsFired() * 0.050);
 		else
 			maxfov = fov;
 
-		const int size = 15;
-		int bones[size] = { 8,7,6,5,4,3,0,69,63,73,74,70,67,68,64 };
+		const int size = 8;
+		int bones[size] = { 8,7,6,5,4,3,0 };
 
 		if (SaveTargetAim)
-		{
 			if (m_Target != -1 && EntityList[m_Target].IsVisible())
 				return m_Target;
-		}
 
 		for (int i = 0; i < csgo->GetMaxClients(); i++) {
 
@@ -86,7 +84,7 @@ public:
 			csgo->GetViewAngles(ViewAngles);
 			/*PunchAngles = LocalEntity.GetPunchAngles();
 			PunchAngles.z = 0.0f;
-			ViewAngles -= PunchAngles * 2;*/
+			ViewAngles += PunchAngles * rcsScale;*/
 
 			for (int num = 0; num < size; num++) {
 				float fov = GetFov(ViewAngles, LocalEntity.GetEyePosition(), EntityList[i].GetBonePosition(bones[num]));
@@ -304,10 +302,20 @@ public:
 		ViewAngles.Normalize();
 
 		// RCS 
-		if (LocalEntity.GetShotsFired() > 2) {
+		if (LocalEntity.GetShotsFired() > 1 &&
+			(LocalEntity.GetWeaponType(0) == EWeaponType::WeapType_Rifle
+				|| LocalEntity.GetWeaponType(0) == EWeaponType::WeapType_SMG
+				|| LocalEntity.GetWeaponType(0) == EWeaponType::WeapType_LMG)) {
 			Vector PunchAngles = LocalEntity.GetPunchAngles();
 			PunchAngles.z = 0.0f;
-			ViewAngles -= PunchAngles * (LocalEntity.GetShotsFired() < 6 ? 3.f : rcsScale);
+			ViewAngles -= PunchAngles * (LocalEntity.GetShotsFired() < 6 ? 3.2f : rcsScale);
+
+			ViewAngles.Normalize();
+		}
+		else {
+			Vector PunchAngles = LocalEntity.GetPunchAngles();
+			PunchAngles.z = 0.0f;
+			ViewAngles -= PunchAngles * rcsScale;
 
 			ViewAngles.Normalize();
 		}
@@ -435,8 +443,8 @@ public:
 					csgo->GetViewAngles(angDelta);
 					angDelta -= anglesToAim;
 
-					float xPixels = angDelta.y / (0.022f * 2 * 1.0f);
-					float yPixels = -angDelta.x / (0.022f * 2 * 1.0f);
+					float xPixels = angDelta.y / (0.022f * GetSensitivity());
+					float yPixels = -angDelta.x / (0.022f * GetSensitivity());
 
 					static int xSleep = 0;
 					static int ySleep = 0;
@@ -463,15 +471,19 @@ public:
 						MoveMouse_round(xPixels, yPixels);
 				}
 				else
-				{
 					if (StartB <= work && work <= EndB)
 						csgo->SetViewAngles(anglesToAim);
-				}
 			}
 		}
 		catch (...) {
 			mem->debuglog(__FILE__);
 		}
+	}
+
+	float GetSensitivity(void) {
+		static cs_convar sensitivity = cvar::find("sensitivity");
+
+		return sensitivity.GetFloat();
 	}
 
 private:

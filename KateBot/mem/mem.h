@@ -21,10 +21,13 @@ public:
 	void					Detach();
 	bool					DumpModList();
 	
+	uintptr_t FindExport(uintptr_t module, const char* name);
+
 	bool					Read( DWORD_PTR dwAddress, LPVOID lpBuffer, DWORD_PTR dwSize );
 	bool					Write( DWORD_PTR dwAddress, LPCVOID lpBuffer, DWORD_PTR dwSize );
 
 	Module*					GetModule( const std::string& ImageName );
+	uintptr_t GetModulePtr(const std::string& ImageName);
 	HMODULE					LoadRemote( const std::string& ImageName );
 
 	void                    SetWindow( HWND window );
@@ -58,6 +61,12 @@ public:
 		return tRet;
 	}
 
+	template<typename T>
+	T ReadPtr32(DWORD_PTR dwAddress)
+	{
+		return this->Read<T>(this->Read<uintptr_t>(dwAddress));
+	}
+	
 	template<typename T>
 	bool Write( DWORD_PTR dwAddress, const T& tValue )
 	{

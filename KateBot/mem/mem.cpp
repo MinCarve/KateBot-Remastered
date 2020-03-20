@@ -5,6 +5,8 @@ Module* client = nullptr;
 Module* engine = nullptr;
 Module* csgobase = nullptr;
 
+#define IS_WOW64_ADDRESS(address) (address <= 0xffffffffUL)
+
 Mem::Mem()
 {
 
@@ -72,6 +74,11 @@ Module* Mem::GetModule(const std::string& ImageName)
 	}
 
 	return nullptr;
+}
+
+uintptr_t Mem::GetModulePtr(const std::string& ImageName)
+{
+	return GetModule(ImageName)->GetImage();
 }
 
 void Mem::SetWindow(HWND window)
@@ -246,9 +253,27 @@ bool Mem::DumpModList()
 
 	CloseHandle(hSnapshot);
 
+	cvar::Init();
+
 	return !m_pModList.empty();
 }
+uintptr_t Mem::FindExport(uintptr_t module, const char* name)
+{
+	uintptr_t a0;
+	uint32_t  a1[4], a2[30];
 
+	a0 = module + this->Read<uint16_t>(module + 0x3C);
+	a0 = module + this->Read<uint32_t>(a0 + 0x88 - (bool)(IS_WOW64_ADDRESS(module)) * 16);
+	this->Read(a0 + 0x18, &a1, sizeof(a1));
+	while (a1[0]--) {
+		a0 = this->Read<uint32_t>(module + a1[2] + (a1[0] * 4));
+		this->Read(module + a0, &a2, sizeof(a2));
+		if (!_stricmp((const char*)a2, name)) {
+			return (module + this->Read<uint32_t>(module + a1[1] + (this->Read<uint16_t>(module + a1[3] + (a1[0] * 2)) * 4)));
+		}
+	}
+	return 0;
+}
 DWORD Mem::GetProcessIdByName(const std::string& name)
 {
 	HANDLE hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, NULL);

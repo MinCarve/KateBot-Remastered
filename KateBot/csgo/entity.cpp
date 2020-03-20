@@ -302,11 +302,6 @@ bool Entity::IsValid()
 	if (!GetBoneMatrix())
 		return false;
 
-	if (csgo->IsDangerZone() && !GetSurvivalTeam())
-		return false;
-	else if(!GetTeamNum())
-		return false;
-
 	if (IsDead())
 		return false;
 

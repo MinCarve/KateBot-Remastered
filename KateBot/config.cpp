@@ -39,15 +39,20 @@ void Config::LoadConfig()
 	keys.chams_toggle = g_pFiles->ReadInt("Keys", "Chams.Toggle");
 	keys.nightmode_toggle = g_pFiles->ReadInt("Keys", "NightMode.Toggle");
 	keys.radar_toggle = g_pFiles->ReadInt("Keys", "Radar.Toggle");
+	keys.streamode_toggle = g_pFiles->ReadInt("Keys", "StreamMode.Toggle");
 	//keys.panic_mode = g_pFiles->ReadInt("Keys","PANIC_MODE");
 	
 	debugEnable = g_pFiles->ReadBool("Features", "Debug.Enable");
-	StreamMode = g_pFiles->ReadBool("Features","StreamMode.Enable");
+	StreamMode = g_pFiles->ReadBool("Features", "StreamMode.Enable");
+	AspectRatio = g_pFiles->ReadBool("Features", "AspectRatio.Enable");
+	GrenadePrediction = g_pFiles->ReadBool("Features", "GrenadePrediction.Enable");
+	RecoilCrosshair = g_pFiles->ReadBool("Features","RecoilCrosshair.Enable");
 	glowEspEnabled = g_pFiles->ReadBool("Features","GlowESP.Enable");
 	aimbotEnabled = g_pFiles->ReadBool("Features","Aimbot.Enable");
 	triggerbotEnabled = g_pFiles->ReadBool("Features","Triggerbot.Enable");
 	bunnyhopEnabled = g_pFiles->ReadBool("Features","Bunnyhop.Enable");
-	skinchangerEnabled = g_pFiles->ReadBool("Features","Skinchanger.Enable");
+	skinchangerEnabled = g_pFiles->ReadBool("Features", "Skinchanger.Enable");
+	SkyBoxChanger = g_pFiles->ReadBool("Features","SkyBoxChanger.Enable");
 	chams.enabled = g_pFiles->ReadBool("Features", "Chams.Enable");
 	radar = g_pFiles->ReadBool("Features", "Radar.Enable");
 	nightmode.enabled = g_pFiles->ReadBool("Features", "NightMode.Enable");
@@ -76,7 +81,9 @@ void Config::LoadConfig()
 	faceitAim = g_pFiles->ReadBool("Aimbot", "FaceitMode.Enable");
 	SprayFOV = g_pFiles->ReadBool("Aimbot","SprayFOV.Enable");
 
-	bspParsing = g_pFiles->ReadBool("BSPParsing","Enable");
+	bspParsing = g_pFiles->ReadBool("BSPParsing", "Enable");
+
+	aspect_ratio.value = g_pFiles->ReadFloat("AspectRatio", "Value");
 
 	chams.modelambient = g_pFiles->ReadBool("Chams", "ModelAmbient.Enable");
 	chams.health_based = g_pFiles->ReadBool("Chams", "HealthBased.Enable");
@@ -111,9 +118,12 @@ void Config::LoadConfig()
 
 	nightmode.amount = g_pFiles->ReadFloat("NightMode", "Amount");
 
-	skinchangerAutoUpdate = g_pFiles->ReadBool("Settings","Skinchanger.AutoUpdate");
+	skinchangerAutoUpdate = g_pFiles->ReadBool("Settings", "Skinchanger.AutoUpdate");
+
+	skybox.name = g_pFiles->ReadChar("Skybox","Name");
 
 	triggerbot.fovBased = g_pFiles->ReadBool("Triggerbot", "FovBased.Enable");
+	triggerbot.fov = g_pFiles->ReadFloat("Triggerbot", "Fov");
 	triggerbot.delay = g_pFiles->ReadFloat("Triggerbot","Delay");
 
 	glowesp.noflicker = g_pFiles->ReadBool("GlowESP", "NoFlicker.Enable");

@@ -17,6 +17,10 @@ public:
 	float LMGsAdaptiveSmoothMultiplier = 1.0f;
 
 	bool StreamMode = false;
+	bool AspectRatio = false;
+	bool GrenadePrediction = false;
+	bool RecoilCrosshair = false;
+	bool SkyBoxChanger = false;
 	bool RiflesAdaptiveSmooth = false;
 	bool PistolsAdaptiveSmooth = false;
 	bool SnipersAdaptiveSmooth = false;
@@ -54,8 +58,9 @@ public:
 		int nightmode_toggle;
 		int radar_toggle;
 		int skinchanger_toggle;
+		int streamode_toggle;
 	}keys;
-	
+
 	struct aimbot {
 		
 		bool enable = false;
@@ -87,6 +92,10 @@ public:
 		int statTrack = 0;
 		
 	}skin[100];
+
+	struct skybox {
+		char* name;
+	}skybox;
 	
 	struct chams {
 		bool enabled;
@@ -102,6 +111,10 @@ public:
 		bool viewmodel_chams = false;
 	}chams;
 
+	struct aspect_ratio {
+		int value = 0;
+	}aspect_ratio;
+
 	struct nightmode {
 		bool enabled = false;
 		float amount = 20.f;
@@ -116,6 +129,7 @@ public:
 	
 	struct triggerbot {
 		bool fovBased;
+		float fov = 2;
 		float delay;
 	}triggerbot;
 	

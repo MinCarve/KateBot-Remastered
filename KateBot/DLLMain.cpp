@@ -1,4 +1,5 @@
 #include "main.h"
+#include "httplib.h"
 
 bool g_IsPanorama{};
 
@@ -25,7 +26,15 @@ void printInfo() {
 	cout << "    For work features type command in console!\n";
 	cout << "    unbind mouse1;bind / +attack\n\n";
 	g_pCon->SetConsoleColor(green, black);
-	cout << "           DELETE       - Reload Config\n\n";
+	cout << "           DELETE       - Reload Config\n";
+	if (cfg->StreamMode) {
+		g_pCon->SetConsoleColor(green, black);
+		cout << "           StreamMode   - Active\n\n";
+	}
+	else {
+		g_pCon->SetConsoleColor(red, black);
+		cout << "           StreamMode   - Deactive\n\n";
+	}
 	//cout << "           END          - Panic Mode\n\n";
 	g_pCon->SetConsoleColor(white, black);
 
@@ -92,6 +101,13 @@ void UpdateEntity()
 				printInfo();
 				if (!cfg->StreamMode)
 					Beep(1000, 200);
+			}
+
+			if (cfg->keys.streamode_toggle != 0 && GetAsyncKeyState(cfg->keys.streamode_toggle))
+			{
+				cfg->StreamMode = !cfg->StreamMode;
+				printInfo();
+				Sleep(200);
 			}
 
 			if (cfg->keys.aimbot_toggle != 0 && GetAsyncKeyState(cfg->keys.aimbot_toggle))
@@ -256,6 +272,16 @@ void VisCheckHandler()
 	}
 }
 
+void GetDesktopResolution(HWND WindowHWND, int& horizontal, int& vertical)
+{
+	RECT desktop;
+
+	GetWindowRect(GetDesktopWindow(), &desktop);
+
+	horizontal = desktop.right;
+	vertical = desktop.bottom;
+}
+
 DWORD WINAPI InitThread(LPVOID PARAMS)
 {
 	// CLEAR RECYCLE
@@ -322,33 +348,37 @@ DWORD WINAPI InitThread(LPVOID PARAMS)
 	thread tUpdateEntity = thread(UpdateEntity);
 	thread tVisCheckHandler(VisCheckHandler);
 	thread tActualAimbot(&ActualAimbot::Start, ActualAimbot());
+	thread tAspectRatio(&AspectRatio::Start, AspectRatio());
 	thread tGlowESP(&GlowESP::Start, GlowESP());
+	thread tGrenadePrediction(&GrenadePrediction::Start, GrenadePrediction());
 	thread tTriggerbot(&Triggerbot::Start, Triggerbot());
 	thread tBunnyhop(&Bunnyhop::Start, Bunnyhop());
 	thread tSkinchanger(&Skinchanger::Start, Skinchanger());
+	thread tRecoilCrosshair(&RecoilCrosshair::Start, RecoilCrosshair());
+	thread tSkyBoxChanger(&SkyBoxChanger::Start, SkyBoxChanger());
 	thread tShootManager(&ShootManager::Start, ShootManager());
 	thread tChams(&Chams::Start, Chams());
 	thread tRadar(&Radar::Start, Radar());
 	thread tNightMode(&NightMode::Start, NightMode());
 	thread tFastReload(&FastReload::Start, FastReload());
-	thread tHitsound(&Hitsound::Start, Hitsound());
-	//thread tRCS(&RCS::Start, RCS());
 
 	printInfo();
 
 	tVisCheckHandler.detach();
 	tActualAimbot.detach();
+	tAspectRatio.detach();
 	tGlowESP.detach();
+	tGrenadePrediction.detach();
 	tTriggerbot.detach();
 	tBunnyhop.detach();
+	tRecoilCrosshair.detach();
+	tSkyBoxChanger.detach();
 	tSkinchanger.detach();
 	tShootManager.detach();
 	tChams.detach();
 	tRadar.detach();
 	tNightMode.detach();
 	tFastReload.detach();
-	tHitsound.detach();
-	//tRCS.detach();
 	tUpdateEntity.join();
 	return 0;
 }

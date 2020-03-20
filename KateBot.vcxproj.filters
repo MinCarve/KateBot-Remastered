@@ -118,10 +118,19 @@
     <ClInclude Include="KateBot\utils\typedefs.h">
       <Filter>Source Files\utils</Filter>
     </ClInclude>
-    <ClInclude Include="KateBot\cheats\Hitsound.h">
+    <ClInclude Include="KateBot\cheats\AspectRatio.h">
       <Filter>Source Files\cheats</Filter>
     </ClInclude>
-    <ClInclude Include="KateBot\cheats\RCS.h">
+    <ClInclude Include="KateBot\cheats\GrenadePrediction.h">
+      <Filter>Source Files\cheats</Filter>
+    </ClInclude>
+    <ClInclude Include="KateBot\cheats\RecoilCrosshair.h">
+      <Filter>Source Files\cheats</Filter>
+    </ClInclude>
+    <ClInclude Include="KateBot\cheats\SkyBoxChanger.h">
+      <Filter>Source Files\cheats</Filter>
+    </ClInclude>
+    <ClInclude Include="cvar_mgr.hpp">
       <Filter>Source Files\cheats</Filter>
     </ClInclude>
   </ItemGroup>
@@ -164,6 +173,9 @@
     </ClCompile>
     <ClCompile Include="KateBot\csgo\netvars.cpp">
       <Filter>Source Files\csgo</Filter>
+    </ClCompile>
+    <ClCompile Include="KateBot\cheats\cvar_mgr.cpp">
+      <Filter>Source Files\cheats</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

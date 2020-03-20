@@ -27,6 +27,10 @@ public:
 	DWORD m_dwClientState;
 	DWORD m_dwGlowObject;
 	DWORD m_dwForceJump;
+	DWORD m_dwForceForward;
+	DWORD m_dwForceBackward;
+	DWORD m_dwForceLeft;
+	DWORD m_dwForceRight;
 	DWORD m_dwGameRulesProxy;
 	DWORD m_dwGlobalVars;
 	DWORD m_hActiveWeapon;
@@ -55,6 +59,7 @@ public:
 	DWORD m_SurvivalGameRuleDecisionTypes;
 	DWORD m_iClip1;
 	DWORD modelAmbientMin;
+	DWORD sv_skybox;
 
 	DWORD m_hTonemapController;
 	DWORD m_bUseCustomAutoExposureMin;
