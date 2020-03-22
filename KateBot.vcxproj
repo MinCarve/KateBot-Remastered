@@ -11,7 +11,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="cvar_mgr.hpp" />
     <ClInclude Include="KateBot\cheats\ActualAimbot.h" />
     <ClInclude Include="KateBot\cheats\AspectRatio.h" />
     <ClInclude Include="KateBot\cheats\Bunnyhop.h" />
@@ -20,14 +19,18 @@
     <ClInclude Include="KateBot\cheats\GlowESP.h" />
     <ClInclude Include="KateBot\cheats\GrenadePrediction.h" />
     <ClInclude Include="KateBot\cheats\NightMode.h" />
+    <ClInclude Include="KateBot\cheats\PostProcessing.h" />
     <ClInclude Include="KateBot\cheats\Radar.h" />
     <ClInclude Include="KateBot\cheats\RecoilCrosshair.h" />
     <ClInclude Include="KateBot\cheats\Skinchanger.h" />
     <ClInclude Include="KateBot\cheats\SkyBoxChanger.h" />
     <ClInclude Include="KateBot\cheats\Triggerbot.h" />
+    <ClInclude Include="KateBot\cheats\ViewModelFOV.h" />
     <ClInclude Include="KateBot\config.h" />
     <ClInclude Include="KateBot\csgo\csgo.h" />
+    <ClInclude Include="KateBot\csgo\cvar_mgr.hpp" />
     <ClInclude Include="KateBot\csgo\entity.h" />
+    <ClInclude Include="KateBot\csgo\input_system.hpp" />
     <ClInclude Include="KateBot\csgo\math.h" />
     <ClInclude Include="KateBot\csgo\netvars.h" />
     <ClInclude Include="KateBot\enums.h" />
@@ -50,10 +53,11 @@
     <ClInclude Include="KateBot\ValveBSP\TraceRay.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="KateBot\cheats\cvar_mgr.cpp" />
     <ClCompile Include="KateBot\config.cpp" />
     <ClCompile Include="KateBot\csgo\csgo.cpp" />
+    <ClCompile Include="KateBot\csgo\cvar_mgr.cpp" />
     <ClCompile Include="KateBot\csgo\entity.cpp" />
+    <ClCompile Include="KateBot\csgo\input_system.cpp" />
     <ClCompile Include="KateBot\csgo\netvars.cpp" />
     <ClCompile Include="KateBot\DLLMain.cpp">
       <MultiProcessorCompilation Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</MultiProcessorCompilation>
@@ -124,6 +128,7 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <TargetMachine>MachineX86</TargetMachine>

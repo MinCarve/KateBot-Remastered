@@ -21,7 +21,7 @@ public:
 	void					Detach();
 	bool					DumpModList();
 	
-	uintptr_t FindExport(uintptr_t module, const char* name);
+	uintptr_t				FindExport(uintptr_t module, const char* name);
 
 	bool					Read( DWORD_PTR dwAddress, LPVOID lpBuffer, DWORD_PTR dwSize );
 	bool					Write( DWORD_PTR dwAddress, LPCVOID lpBuffer, DWORD_PTR dwSize );

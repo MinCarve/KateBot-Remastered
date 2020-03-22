@@ -26,7 +26,7 @@ public:
 					continue;
 
 				//printf("Accuracy: %.4f\n", LocalEntity.GetAccuracyPenalty());
-				if (GetAsyncKeyState(cfg->keys.triggerbot_hold) & 0x8000)
+				if (input_system::IsButtonDown(input_system::vktobc(cfg->keys.triggerbot_hold)))
 				{
 					bool shoot = false;
 

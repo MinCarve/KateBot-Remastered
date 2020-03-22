@@ -46,7 +46,9 @@ void Config::LoadConfig()
 	StreamMode = g_pFiles->ReadBool("Features", "StreamMode.Enable");
 	AspectRatio = g_pFiles->ReadBool("Features", "AspectRatio.Enable");
 	GrenadePrediction = g_pFiles->ReadBool("Features", "GrenadePrediction.Enable");
-	RecoilCrosshair = g_pFiles->ReadBool("Features","RecoilCrosshair.Enable");
+	RecoilCrosshair = g_pFiles->ReadBool("Features", "RecoilCrosshair.Enable");
+	ViewModelFOVChanger = g_pFiles->ReadBool("Features", "ViewModelFOV.Enable");
+	DisablePostProcessing = g_pFiles->ReadBool("Features","DisablePostProcessing.Enable");
 	glowEspEnabled = g_pFiles->ReadBool("Features","GlowESP.Enable");
 	aimbotEnabled = g_pFiles->ReadBool("Features","Aimbot.Enable");
 	triggerbotEnabled = g_pFiles->ReadBool("Features","Triggerbot.Enable");
@@ -84,6 +86,8 @@ void Config::LoadConfig()
 	bspParsing = g_pFiles->ReadBool("BSPParsing", "Enable");
 
 	aspect_ratio.value = g_pFiles->ReadFloat("AspectRatio", "Value");
+
+	viewmodel.fov = g_pFiles->ReadFloat("ViewModel", "Fov");
 
 	chams.modelambient = g_pFiles->ReadBool("Chams", "ModelAmbient.Enable");
 	chams.health_based = g_pFiles->ReadBool("Chams", "HealthBased.Enable");

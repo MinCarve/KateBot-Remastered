@@ -211,11 +211,31 @@ void UpdateEntity()
 	}
 }
 
+void PrimaryMonitorLock(HWND WindowHANDLE) {
+	try
+	{
+		for (;;)
+		{
+			std::this_thread::sleep_for(std::chrono::milliseconds(1));
+
+			if (!miscUtils->IsCSGOActiveWindow()) continue;
+
+			RECT rect;
+			GetWindowRect(WindowHANDLE, &rect);
+
+			ClipCursor(&rect);
+		}
+	}
+	catch (...) {
+		mem->debuglog("PrimaryMonitorLock");
+	}
+}
+
 void VisCheckHandler()
 {
 	try {
 		for (;;) {
-			std::this_thread::sleep_for(std::chrono::milliseconds(50));
+			std::this_thread::sleep_for(std::chrono::milliseconds(50));			
 
 			if (!cfg->bspParsing)
 				continue;
@@ -344,13 +364,18 @@ DWORD WINAPI InitThread(LPVOID PARAMS)
 	cfg->LoadConfig();
 	ofs->getOffsets();
 	csgo->GlobalsSetup();
+	input_system::Init();
+	cvar::Init();
 
 	thread tUpdateEntity = thread(UpdateEntity);
 	thread tVisCheckHandler(VisCheckHandler);
+	thread tPrimaryMonitorLock(PrimaryMonitorLock, GameHandle);
 	thread tActualAimbot(&ActualAimbot::Start, ActualAimbot());
 	thread tAspectRatio(&AspectRatio::Start, AspectRatio());
 	thread tGlowESP(&GlowESP::Start, GlowESP());
 	thread tGrenadePrediction(&GrenadePrediction::Start, GrenadePrediction());
+	thread tViewModelFOVChanger(&ViewModelFOVChanger::Start, ViewModelFOVChanger());
+	thread tPostProcessing(&PostProcessing::Start, PostProcessing());
 	thread tTriggerbot(&Triggerbot::Start, Triggerbot());
 	thread tBunnyhop(&Bunnyhop::Start, Bunnyhop());
 	thread tSkinchanger(&Skinchanger::Start, Skinchanger());
@@ -365,10 +390,13 @@ DWORD WINAPI InitThread(LPVOID PARAMS)
 	printInfo();
 
 	tVisCheckHandler.detach();
+	tPrimaryMonitorLock.join();
 	tActualAimbot.detach();
 	tAspectRatio.detach();
 	tGlowESP.detach();
 	tGrenadePrediction.detach();
+	tViewModelFOVChanger.detach();
+	tPostProcessing.detach();
 	tTriggerbot.detach();
 	tBunnyhop.detach();
 	tRecoilCrosshair.detach();

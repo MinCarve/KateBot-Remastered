@@ -70,7 +70,8 @@
 #include "CSGO\csgo.h"
 #include "CSGO\entity.h"
 
-#include "Cheats\cvar_mgr.hpp"
+#include "CSGO\cvar_mgr.hpp"
+#include "CSGO\input_system.hpp"
 
 // Utils
 #include "Utils\files.h"
@@ -85,6 +86,8 @@
 #include "Cheats\AspectRatio.h"
 #include "Cheats\GlowESP.h"
 #include "Cheats\GrenadePrediction.h"
+#include "Cheats\ViewModelFOV.h"
+#include "Cheats\PostProcessing.h"
 #include "Cheats\Triggerbot.h"
 #include "Cheats\Bunnyhop.h"
 #include "Cheats\Skinchanger.h"

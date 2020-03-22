@@ -14,8 +14,8 @@ public:
 		int index = -1;
 		float best = 2.f;
 
-		if (cfg->SprayFOV && LocalEntity.GetShotsFired() > 1)
-			best = fov + (LocalEntity.GetShotsFired() * 0.050);
+		if (cfg->SprayFOV && LocalEntity.GetShotsFired() > 2)
+			best = fov + (LocalEntity.GetPunchAngles().Length() / 1.2);
 		else
 			best = fov;
 
@@ -57,8 +57,8 @@ public:
 		int bestBone = -1;
 		float maxfov = 2.f;
 
-		if (cfg->SprayFOV && LocalEntity.GetShotsFired() > 1)
-			maxfov = fov + (LocalEntity.GetShotsFired() * 0.050);
+		if (cfg->SprayFOV && LocalEntity.GetShotsFired() > 2)
+			maxfov = fov + (LocalEntity.GetPunchAngles().Length() / 1.2);
 		else
 			maxfov = fov;
 
@@ -84,7 +84,7 @@ public:
 			csgo->GetViewAngles(ViewAngles);
 			/*PunchAngles = LocalEntity.GetPunchAngles();
 			PunchAngles.z = 0.0f;
-			ViewAngles += PunchAngles * rcsScale;*/
+			ViewAngles -= PunchAngles * rcsScale;*/
 
 			for (int num = 0; num < size; num++) {
 				float fov = GetFov(ViewAngles, LocalEntity.GetEyePosition(), EntityList[i].GetBonePosition(bones[num]));
@@ -243,7 +243,6 @@ public:
 
 	Vector GetAimbotAngles()
 	{
-
 		if (m_Target != -1 && !EntityList[m_Target].IsValid()) //комент, чтобы игнорило выпавших из фова
 			DropTarget();
 
@@ -301,18 +300,18 @@ public:
 		ViewAngles = CalcAngle(position, enemyPos);
 		ViewAngles.Normalize();
 
+		bool rcs_weapon = IsRCSWeapon();
+
 		// RCS 
-		if (LocalEntity.GetShotsFired() > 1 &&
-			(LocalEntity.GetWeaponType(0) == EWeaponType::WeapType_Rifle
-				|| LocalEntity.GetWeaponType(0) == EWeaponType::WeapType_SMG
-				|| LocalEntity.GetWeaponType(0) == EWeaponType::WeapType_LMG)) {
+		if (LocalEntity.GetShotsFired() > 1 && rcs_weapon) {
 			Vector PunchAngles = LocalEntity.GetPunchAngles();
 			PunchAngles.z = 0.0f;
-			ViewAngles -= PunchAngles * (LocalEntity.GetShotsFired() < 6 ? 3.2f : rcsScale);
+			ViewAngles -= PunchAngles * (LocalEntity.GetShotsFired() < 6 ? 2.5f : rcsScale);
 
 			ViewAngles.Normalize();
 		}
-		else {
+
+		if (!rcs_weapon){
 			Vector PunchAngles = LocalEntity.GetPunchAngles();
 			PunchAngles.z = 0.0f;
 			ViewAngles -= PunchAngles * rcsScale;
@@ -351,6 +350,12 @@ public:
 			ViewAngles.Normalize();
 		}
 		return ViewAngles;
+	}
+
+	bool IsRCSWeapon(void) {
+		return (LocalEntity.GetWeaponType(0) == EWeaponType::WeapType_Rifle
+			|| LocalEntity.GetWeaponType(0) == EWeaponType::WeapType_SMG
+			|| LocalEntity.GetWeaponType(0) == EWeaponType::WeapType_LMG);
 	}
 
 	bool IsKillDelay() {
@@ -416,7 +421,7 @@ public:
 				SaveTargetAim = cfg->SaveTargetAim;
 
 				//printf("g_Target: %d\n",g_Target);
-				if (!GetAsyncKeyState(cfg->keys.aimbot_hold))
+				if (!input_system::IsButtonDown(input_system::vktobc(cfg->keys.aimbot_hold)))
 				{
 					DropTarget();
 					TargetBone = -1;
@@ -432,7 +437,7 @@ public:
 					continue;
 				}
 
-				if (anglesToAim == Vector(0, 0, 0))
+				if (anglesToAim.Length() == 0)
 					continue;
 
 				g_Target = m_Target;
@@ -443,8 +448,8 @@ public:
 					csgo->GetViewAngles(angDelta);
 					angDelta -= anglesToAim;
 
-					float xPixels = angDelta.y / (0.022f * GetSensitivity());
-					float yPixels = -angDelta.x / (0.022f * GetSensitivity());
+					float xPixels = angDelta.y / (GetMouseYaw() * GetSensitivity());
+					float yPixels = -angDelta.x / (GetMousePitch() * GetSensitivity());
 
 					static int xSleep = 0;
 					static int ySleep = 0;
@@ -484,6 +489,18 @@ public:
 		static cs_convar sensitivity = cvar::find("sensitivity");
 
 		return sensitivity.GetFloat();
+	}
+
+	float GetMouseYaw(void) {
+		static cs_convar m_yaw = cvar::find("m_yaw");
+
+		return m_yaw.GetFloat();
+	}
+
+	float GetMousePitch(void) {
+		static cs_convar m_pitch = cvar::find("m_pitch");
+
+		return m_pitch.GetFloat();
 	}
 
 private:

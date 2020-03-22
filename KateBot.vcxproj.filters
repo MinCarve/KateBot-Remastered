@@ -130,8 +130,17 @@
     <ClInclude Include="KateBot\cheats\SkyBoxChanger.h">
       <Filter>Source Files\cheats</Filter>
     </ClInclude>
-    <ClInclude Include="cvar_mgr.hpp">
+    <ClInclude Include="KateBot\csgo\cvar_mgr.hpp">
+      <Filter>Source Files\csgo</Filter>
+    </ClInclude>
+    <ClInclude Include="KateBot\cheats\ViewModelFOV.h">
       <Filter>Source Files\cheats</Filter>
+    </ClInclude>
+    <ClInclude Include="KateBot\cheats\PostProcessing.h">
+      <Filter>Source Files\cheats</Filter>
+    </ClInclude>
+    <ClInclude Include="KateBot\csgo\input_system.hpp">
+      <Filter>Source Files\csgo</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -174,8 +183,11 @@
     <ClCompile Include="KateBot\csgo\netvars.cpp">
       <Filter>Source Files\csgo</Filter>
     </ClCompile>
-    <ClCompile Include="KateBot\cheats\cvar_mgr.cpp">
-      <Filter>Source Files\cheats</Filter>
+    <ClCompile Include="KateBot\csgo\cvar_mgr.cpp">
+      <Filter>Source Files\csgo</Filter>
+    </ClCompile>
+    <ClCompile Include="KateBot\csgo\input_system.cpp">
+      <Filter>Source Files\csgo</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

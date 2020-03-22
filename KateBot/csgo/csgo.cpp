@@ -46,7 +46,10 @@ bool Engine::IsDangerZone()
 
 int Engine::GetGameType()
 {
-	return mem->Read<int>(mem->Read<int>(client->GetImage() + ofs->m_dwGameRulesProxy) + ofs->m_SurvivalGameRuleDecisionTypes);
+	static auto game_type = cvar::find("game_type");
+
+	return game_type.GetInt();
+	//return mem->Read<int>(mem->Read<int>(client->GetImage() + ofs->m_dwGameRulesProxy) + ofs->m_SurvivalGameRuleDecisionTypes);
 }
 
 int Engine::GetLocalPlayer()

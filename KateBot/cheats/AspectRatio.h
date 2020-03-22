@@ -39,9 +39,9 @@ public:
 	}
 
 	void C_AspectRatio(float value) {
-		static auto sky = cvar::find("r_aspectratio");
+		static auto r_aspectratio = cvar::find("r_aspectratio");
 
-		sky.SetFloat(value);
+		r_aspectratio.SetFloat(value);
 	}
 };
 

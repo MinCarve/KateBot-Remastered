@@ -16,7 +16,7 @@ public:
 	void Start() {
 		try {
 			for (;;) {
-				std::this_thread::sleep_for(std::chrono::milliseconds(10));
+				std::this_thread::sleep_for(std::chrono::milliseconds(16));
 
 				if (cfg->panicMode)
 					continue;
@@ -74,29 +74,6 @@ public:
 					}
 					else if (EntityClassID == CC4 || EntityClassID == CPlantedC4)
 						mem->Write(Entity + 0x70, ColorESP::Colors->CfgColor(cfg->chams.c4color));
-					else if (EntityClassID == CAK47 ||
-						EntityClassID == CWeaponAWP ||
-						EntityClassID == CWeaponAug ||
-						EntityClassID == CWeaponFamas ||
-						EntityClassID == CWeaponG3SG1 ||
-						EntityClassID == CWeaponGalilAR ||
-						EntityClassID == CWeaponGlock ||
-						EntityClassID == CWeaponM4A1 ||
-						EntityClassID == CWeaponMAC10 ||
-						EntityClassID == CWeaponMP5Navy ||
-						EntityClassID == CWeaponMP7 ||
-						EntityClassID == CWeaponMP9 ||
-						EntityClassID == CWeaponP250 ||
-						EntityClassID == CWeaponP90 ||
-						EntityClassID == CWeaponSCAR20 ||
-						EntityClassID == CWeaponScout ||
-						EntityClassID == CWeaponSG550 ||
-						EntityClassID == CWeaponSG556 ||
-						EntityClassID == CWeaponSSG08 ||
-						EntityClassID == CDEagle ||
-						EntityClassID == CWeaponUSP ||
-						EntityClassID == CWeaponGalil)
-						mem->Write(Entity + 0x70, ColorESP::Colors->Red());
 					else if (EntityClassID == CPredictedViewModel)
 						mem->Write(Entity + 0x70, cfg->chams.viewmodel_chams ? LocalEntity.GetActiveWeapon() == WEAPON_C4 ?
 							ColorESP::Colors->BombColor() :
@@ -115,12 +92,9 @@ public:
 	}
 
 	void ModelBrightness(float brightness) {
+		static auto r_modelAmbientMin = cvar::find("r_modelAmbientMin");
 
-		/* model_ambient_min is convar and when Valve starts to check it, there may be an in-game ban for you.
-				You should check this with every VAC update or don't use it. */
-
-		DWORD xored = *(DWORD*)&brightness ^ (int)(engine->GetImage() + ofs->modelAmbientMin - 0x2c);
-		mem->Write<int>(engine->GetImage() + ofs->modelAmbientMin, xored);
+		r_modelAmbientMin.SetFloat(brightness);
 	}
 
 	void ModelBrightnessReset() {

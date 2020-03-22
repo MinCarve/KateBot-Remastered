@@ -39,9 +39,9 @@ public:
 	}
 
 	void GrenadePreview(bool value) {
-		static auto sky = cvar::find("cl_grenadepreview");
+		static auto cl_grenadepreview = cvar::find("cl_grenadepreview");
 
-		sky.SetInt(value);
+		cl_grenadepreview.SetInt(value);
 	}
 };
 

@@ -54,7 +54,6 @@ void Ofs::FindOffsets() {
 	m_dwGameRulesProxy = find_ptr(client, "A1 ? ? ? ? 85 C0 0F 84 ? ? ? ? 80 B8 ? ? ? ? ? 74 7A", 0x1, 0);
 
 	modelAmbientMin = find_ptr(engine, "F3 0F 10 0D ? ? ? ? F3 0F 11 4C 24 ? 8B 44 24 20 35 ? ? ? ? 89 44 24 0C", 0x4, 0); // up
-	sv_skybox = find_ptr(client, "E8 ? ? ? ? 8B C6 5E 5D C2 20 00", 0, 0); // up
 
 	m_hActiveWeapon = GET_NETVAR("DT_BaseCombatCharacter", "m_hActiveWeapon");
 	m_iCrossHairID = GET_NETVAR("DT_CSPlayer", "m_bHasDefuser") + 0x5C;

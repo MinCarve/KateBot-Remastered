@@ -253,8 +253,6 @@ bool Mem::DumpModList()
 
 	CloseHandle(hSnapshot);
 
-	cvar::Init();
-
 	return !m_pModList.empty();
 }
 uintptr_t Mem::FindExport(uintptr_t module, const char* name)

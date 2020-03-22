@@ -21,6 +21,8 @@ public:
 	bool GrenadePrediction = false;
 	bool RecoilCrosshair = false;
 	bool SkyBoxChanger = false;
+	bool ViewModelFOVChanger = false;
+	bool DisablePostProcessing = false;
 	bool RiflesAdaptiveSmooth = false;
 	bool PistolsAdaptiveSmooth = false;
 	bool SnipersAdaptiveSmooth = false;
@@ -96,6 +98,10 @@ public:
 	struct skybox {
 		char* name;
 	}skybox;
+
+	struct viewmodel {
+		float fov;
+	}viewmodel;
 	
 	struct chams {
 		bool enabled;

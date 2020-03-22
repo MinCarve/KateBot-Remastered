@@ -44,15 +44,9 @@ public:
 	}
 
 	void C_RecoilCrosshair(bool value) {
-		static auto cvar = cvar::find("cl_crosshair_recoil");
+		static auto cl_crosshair_recoil = cvar::find("cl_crosshair_recoil");
 
-		cvar.SetFloat(value);
-	}
-
-	float R_RecoilCrosshair() {
-		static auto cvar = cvar::find("cl_crosshair_recoil");
-
-		return cvar.GetFloat();
+		cl_crosshair_recoil.SetFloat(value);
 	}
 };
 
