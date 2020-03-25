@@ -25,6 +25,8 @@ public:
 	DWORD m_dwEntityList;
 	DWORD m_dwForceAttack;
 	DWORD m_dwClientState;
+	DWORD m_dwClientCMD;
+	DWORD m_dwRankRevealAllFn;
 	DWORD m_dwGlowObject;
 	DWORD m_dwForceJump;
 	DWORD m_dwForceForward;
@@ -47,7 +49,9 @@ public:
 	DWORD m_fFlags;
 	DWORD m_bSpotted;
 	DWORD m_bSpottedByMask;
-	DWORD m_dwInGame;
+	DWORD m_dwGameState;
+	DWORD m_bIsScoped;
+	DWORD m_zoomLevel;
 	DWORD m_lifeState;
 	DWORD m_vecOrigin;
 	DWORD m_vecViewOffset;

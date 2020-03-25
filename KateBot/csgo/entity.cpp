@@ -341,7 +341,7 @@ bool Entity::IsDormant()
 bool Entity::IsJumping()
 {
 	int fhh = m_iFlags;
-	if (fhh & 0x1 == 1 || fhh & 0x1 == 3 || fhh & 0x1 == 5 || fhh & 0x1 == 7)
+	if ((fhh & 0x1) == 1 || (fhh & 0x1) == 3 || (fhh & 0x1) == 5 || (fhh & 0x1) == 7)
 	{
 		return false;
 	}

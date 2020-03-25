@@ -10,25 +10,36 @@ Engine::~Engine()
 
 bool Engine::IsConnected()
 {
-	if( !ofs->m_dwClientState )
+	if (!ofs->m_dwClientState)
 		return false;
-	return ( mem->Read<int>( ofs->m_dwClientState + ofs->m_dwInGame) == ( int )SIGNONSTATE_CONNECTED );
+	return (mem->Read<int>(ofs->m_dwClientState + ofs->m_dwGameState) == (int)SIGNONSTATE_CONNECTED);
 }
 
 bool Engine::IsInGame()
 {
-	if( !ofs->m_dwClientState )
+	if (!ofs->m_dwClientState)
 		return false;
-	return ( mem->Read<int>( ofs->m_dwClientState + ofs->m_dwInGame) == ( int )SIGNONSTATE_FULL );
+	return (mem->Read<int>(ofs->m_dwClientState + ofs->m_dwGameState) == (int)SIGNONSTATE_FULL);
 }
 
-GlobalVarsBase Engine::GlobalVars(){
+GlobalVarsBase Engine::GlobalVars() {
 	return mem->Read<GlobalVarsBase>(engine->GetImage() + ofs->m_dwGlobalVars);
+}
+
+void Engine::ClientCMD(std::string cmd)
+{
+	DWORD client_cmd_alloc_adr = mem->AllocMem(cmd.size());
+
+	mem->Write(client_cmd_alloc_adr, cmd.c_str(), cmd.size());
+
+	mem->CRT(reinterpret_cast<void*>(engine->GetImage() + ofs->m_dwClientCMD), reinterpret_cast<void*>(client_cmd_alloc_adr));
+
+	mem->Free(reinterpret_cast<void*>(client_cmd_alloc_adr));
 }
 
 bool Engine::IsTeamSelected()
 {
-	return ( LocalEntity.GetTeamNum() == 2 || LocalEntity.GetTeamNum() == 3 );
+	return (LocalEntity.GetTeamNum() == 2 || LocalEntity.GetTeamNum() == 3);
 }
 
 bool Engine::IsInMyTeam(DWORD Entity)
@@ -54,9 +65,9 @@ int Engine::GetGameType()
 
 int Engine::GetLocalPlayer()
 {
-	if( !ofs->m_dwClientState )
+	if (!ofs->m_dwClientState)
 		return -1;
-	return mem->Read<int>( ofs->m_dwClientState + 0x180 ); //m_dwLocalPlayerIndex
+	return mem->Read<int>(ofs->m_dwClientState + 0x180); //m_dwLocalPlayerIndex
 }
 
 int Engine::GetMaxObjects()
@@ -69,25 +80,25 @@ int Engine::GetMaxEntities()
 	return mem->Read<int>(client->GetImage() + ofs->m_dwEntityList + 0x4);
 }
 
-void Engine::GetViewAngles( Vector& viewangles )
+void Engine::GetViewAngles(Vector& viewangles)
 {
-	if( !ofs->m_dwClientState )
+	if (!ofs->m_dwClientState)
 		return;
-	viewangles = mem->Read<Vector>( ofs->m_dwClientState + ofs->m_dwViewAngles );
+	viewangles = mem->Read<Vector>(ofs->m_dwClientState + ofs->m_dwViewAngles);
 }
 
-void Engine::SetViewAngles( const Vector& viewangles )
+void Engine::SetViewAngles(const Vector& viewangles)
 {
-	if( !ofs->m_dwClientState || viewangles.IsZero() || !viewangles.IsTrue())
+	if (!ofs->m_dwClientState || viewangles.IsZero() || !viewangles.IsTrue())
 		return;
-	mem->Write<Vector>( ofs->m_dwClientState + ofs->m_dwViewAngles, viewangles );
+	mem->Write<Vector>(ofs->m_dwClientState + ofs->m_dwViewAngles, viewangles);
 }
 
 Vector Engine::RetViewAngles()
 {
-	if( !ofs->m_dwClientState )
+	if (!ofs->m_dwClientState)
 		return { 0, 0, 0 };
-	return mem->Read<Vector>( ofs->m_dwClientState + ofs->m_dwViewAngles );
+	return mem->Read<Vector>(ofs->m_dwClientState + ofs->m_dwViewAngles);
 }
 
 
@@ -98,7 +109,7 @@ Vector Engine::RetViewAngles()
 //		we're not inside the same thread with the same timings
 // 
 //  I feel like I've broken this :/
-void Engine::SetViewAnglesPSilent( Vector& viewangles )
+void Engine::SetViewAnglesPSilent(Vector& viewangles)
 {
 	/*if( !g_pAimbot->IsAbleToShoot() )
 		return;
@@ -125,7 +136,7 @@ void Engine::SetViewAnglesPSilent( Vector& viewangles )
 		mem->Write<Vector>( userCMD + 0xC, viewangles );
 	}
 
-	g_pEngine->SetViewAngles( oldAngles ); // Set view angles asap 
+	g_pEngine->SetViewAngles( oldAngles ); // Set view angles asap
 	Sleep( 6 );	// Changed from 7 to 5, could be the reason for shooting twice?
 
 	SetSendPacket( true ); */
@@ -134,9 +145,9 @@ void Engine::SetViewAnglesPSilent( Vector& viewangles )
 
 const char* Engine::GetMapDirectory()
 {
-	if( !ofs->m_dwClientState )
+	if (!ofs->m_dwClientState)
 		return nullptr;
-	mem->Read( ofs->m_dwClientState + ofs->m_dwMapDirectory, m_pMapDirectory, sizeof( char[ 255 ] ) );
+	mem->Read(ofs->m_dwClientState + ofs->m_dwMapDirectory, m_pMapDirectory, sizeof(char[255]));
 	return m_pMapDirectory;
 }
 
@@ -146,7 +157,7 @@ std::string Engine::GetGameDirectory()
 	if (GetModuleFileNameEx(mem->m_hProcess, NULL, filename, MAX_PATH) == 0) {
 		return nullptr;
 	}
-	
+
 	std::string tmp_path(filename);
 	int pos = tmp_path.find("csgo");
 	tmp_path = tmp_path.substr(0, pos);
@@ -157,7 +168,7 @@ std::string Engine::GetGameDirectory()
 
 void Engine::GlobalsSetup()
 {
-	m_dwGlobals = mem->Read< DWORD_PTR >( engine->GetImage() + ofs->m_dwGlobalVars );
+	m_dwGlobals = mem->Read< DWORD_PTR >(engine->GetImage() + ofs->m_dwGlobalVars);
 }
 
 float Engine::GetCurTime()
@@ -203,47 +214,47 @@ char* Engine::GetClassNameFromPlayer(DWORD adr)
 	for (int i = 0; i < 32; i++) {
 		nameData[i] = mem->Read<char>(namePointer + i);
 	}
-	
+
 	return nameData;
 }
-	
+
 
 bool Engine::IsClassIDAWeapon(int iClassID)
 {
 	switch (iClassID)
 	{
-		case CAK47:
-		case CDEagle:
-		case CWeaponAWP:
-		case CWeaponAug:
-		case CWeaponBizon:
-		case CWeaponElite:
-		case CWeaponFamas:
-		case CWeaponFiveSeven:
-		case CWeaponG3SG1:
-		case CWeaponGalilAR:
-		case CWeaponGlock:
-		case CWeaponHKP2000:
-		case CWeaponMAC10:
-		case CWeaponM249:
-		case CWeaponM4A1:
-		case CWeaponM3:
-		case CWeaponMag7:
-		case CWeaponMP7:
-		case CWeaponMP9:
-		case CWeaponNegev:
-		case CWeaponNOVA:
-		case CWeaponP250:
-		case CWeaponP90:
-		case CWeaponSawedoff:
-		case CWeaponSCAR20:
-		case CWeaponSG556:
-		case CWeaponSSG08:
-		case CWeaponTaser:
-		case CWeaponTec9:
-		case CWeaponUSP:
-		case CWeaponUMP45:
-		case CWeaponXM1014:
+	case CAK47:
+	case CDEagle:
+	case CWeaponAWP:
+	case CWeaponAug:
+	case CWeaponBizon:
+	case CWeaponElite:
+	case CWeaponFamas:
+	case CWeaponFiveSeven:
+	case CWeaponG3SG1:
+	case CWeaponGalilAR:
+	case CWeaponGlock:
+	case CWeaponHKP2000:
+	case CWeaponMAC10:
+	case CWeaponM249:
+	case CWeaponM4A1:
+	case CWeaponM3:
+	case CWeaponMag7:
+	case CWeaponMP7:
+	case CWeaponMP9:
+	case CWeaponNegev:
+	case CWeaponNOVA:
+	case CWeaponP250:
+	case CWeaponP90:
+	case CWeaponSawedoff:
+	case CWeaponSCAR20:
+	case CWeaponSG556:
+	case CWeaponSSG08:
+	case CWeaponTaser:
+	case CWeaponTec9:
+	case CWeaponUSP:
+	case CWeaponUMP45:
+	case CWeaponXM1014:
 
 
 		return true;
@@ -256,16 +267,16 @@ bool Engine::IsClassIDAGrenade(int iClassID)
 {
 	switch (iClassID)
 	{
-		case CFlashbang:
-		case CHEGrenade:
-		case CDecoyGrenade:
-		case CIncendiaryGrenade:
-		case CMolotovGrenade:
-		case CSmokeGrenade:
-		case CBaseCSGrenadeProjectile:
-		case CSmokeGrenadeProjectile:
-		case CMolotovProjectile:
-		case CDecoyProjectile:
+	case CFlashbang:
+	case CHEGrenade:
+	case CDecoyGrenade:
+	case CIncendiaryGrenade:
+	case CMolotovGrenade:
+	case CSmokeGrenade:
+	case CBaseCSGrenadeProjectile:
+	case CSmokeGrenadeProjectile:
+	case CMolotovProjectile:
+	case CDecoyProjectile:
 		return true;
 	}
 
@@ -276,12 +287,12 @@ bool Engine::IsClassIDAGrenade(int iClassID)
 void Engine::PressAttackKey()
 {
 	if (!GetAsyncKeyState(cfg->InGameFireKey))
-	{   
+	{
 		INPUT    Input = { 0 };
 		//Press Fire Key
 		ZeroMemory(&Input, sizeof(INPUT));
 		WORD vkey = cfg->InGameFireKey;
- 
+
 		Input.type = INPUT_KEYBOARD;
 		Input.ki.wScan = MapVirtualKey(vkey, MAPVK_VK_TO_VSC);
 		Input.ki.time = 0;
@@ -300,7 +311,7 @@ void Engine::ReleaseAttackKey()
 		//Release Fire Key
 		ZeroMemory(&Input, sizeof(INPUT));
 		WORD vkey = cfg->InGameFireKey;
- 
+
 		Input.type = INPUT_KEYBOARD;
 		Input.ki.wScan = MapVirtualKey(vkey, MAPVK_VK_TO_VSC);
 		Input.ki.time = 0;
@@ -313,20 +324,20 @@ void Engine::ReleaseAttackKey()
 
 void Engine::PAttack()
 {
-	if (!mem->Read<bool>( client->GetImage() + ofs->m_dwForceAttack ))
-		mem->Write<bool>( client->GetImage() + ofs->m_dwForceAttack, true );
+	if (!mem->Read<bool>(client->GetImage() + ofs->m_dwForceAttack))
+		mem->Write<bool>(client->GetImage() + ofs->m_dwForceAttack, true);
 }
 
 void Engine::MAttack()
 {
-	if (mem->Read<bool>( client->GetImage() + ofs->m_dwForceAttack ))
-		mem->Write<bool>( client->GetImage() + ofs->m_dwForceAttack, false );
+	if (mem->Read<bool>(client->GetImage() + ofs->m_dwForceAttack))
+		mem->Write<bool>(client->GetImage() + ofs->m_dwForceAttack, false);
 }
 
 void Engine::ForceFullUpdate()
 {
-	if( !ofs->m_dwClientState )
+	if (!ofs->m_dwClientState)
 		return;
-		
+
 	mem->Write<int>(ofs->m_dwClientState + ofs->m_nDeltaTick, -1);
 }

@@ -15,15 +15,11 @@ public:
 			for (;;) {
 				std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-				if (cfg->panicMode)
-					continue;
-
 				if (!miscUtils->IsCSGOActiveWindow())
 					continue;
 
 				if (!csgo->IsInGame())
 					continue;
-
 
 				if (!cfg->StreamMode)
 					if (cfg->RecoilCrosshair && 

@@ -22,6 +22,9 @@ public:
 	bool					DumpModList();
 	
 	uintptr_t				FindExport(uintptr_t module, const char* name);
+	DWORD					AllocMem(size_t size);
+	bool					Free(void* _address, size_t _size = 0);
+	void					CRT(void* shellcode, void* parameter = nullptr);
 
 	bool					Read( DWORD_PTR dwAddress, LPVOID lpBuffer, DWORD_PTR dwSize );
 	bool					Write( DWORD_PTR dwAddress, LPCVOID lpBuffer, DWORD_PTR dwSize );

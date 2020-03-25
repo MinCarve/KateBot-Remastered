@@ -20,7 +20,7 @@ void printInfo() {
 	std::system("cls");
 
 	g_pCon->SetConsoleColor(red, black);
-	cout << "\n   AfulBot v1.0.0\n\n";
+	cout << "\n   KateBot v1.0.8\n\n";
 	g_pCon->SetConsoleColor(aqua, black);
 	cout << " WARNING: \n";
 	cout << "    For work features type command in console!\n";
@@ -99,8 +99,7 @@ void UpdateEntity()
 			{
 				cfg->LoadConfig();
 				printInfo();
-				if (!cfg->StreamMode)
-					Beep(1000, 200);
+				if (!cfg->StreamMode) Beep(1000, 200);
 			}
 
 			if (cfg->keys.streamode_toggle != 0 && GetAsyncKeyState(cfg->keys.streamode_toggle))
@@ -158,40 +157,9 @@ void UpdateEntity()
 				Sleep(200);
 			}
 
-			/*static bool is_clicked = false;
-			if (GetAsyncKeyState(VK_END))
-			{
-				if (!is_clicked) {
-					cfg->panicMode = true;
-					Sleep(50);
-					csgo->ForceFullUpdate();
-					Beep(1000, 200);
-
-					std::system("cls");
-
-					g_pCon->SetConsoleColor(red, black);
-					printf("Hold END \nfor exit from panic mode ;)\n");
-					g_pCon->SetConsoleColor(white, black);
-
-					unsigned int panicTimer = 0;
-					while (panicTimer < 2000) {
-						if (GetAsyncKeyState(VK_END) & 0x8000) {
-							panicTimer++;
-						}
-						else {
-							panicTimer = 0;
-						}
-
-						Sleep(1);
-					}
-					Beep(800, 100);
-					Beep(800, 100);
-					cfg->panicMode = false;
-					printInfo();
-					is_clicked = true;
-				}
+			if (cfg->StreamMode) {
+				csgo->ClientCMD("clear");
 			}
-			else is_clicked = false;*/
 
 			if (!miscUtils->DoesCSGOExist()) exit(0);
 
@@ -199,6 +167,8 @@ void UpdateEntity()
 				continue;
 
 			if (csgo->IsInGame()) {
+				if (csgo->IsDangerZone()) cfg->bspParsing = true;
+
 				LocalEntity.Update(csgo->GetLocalPlayer());
 
 				for (int iIndex = 0; iIndex <= csgo->GetMaxClients(); iIndex++)
@@ -214,11 +184,23 @@ void UpdateEntity()
 void PrimaryMonitorLock(HWND WindowHANDLE) {
 	try
 	{
+		static auto cl_mouseenable = cvar::find("cl_mouseenable");
+
 		for (;;)
 		{
 			std::this_thread::sleep_for(std::chrono::milliseconds(1));
 
-			if (!miscUtils->IsCSGOActiveWindow()) continue;
+			if (!miscUtils->IsCSGOActiveWindow()) {
+				WindowHANDLE = NULL; continue;
+			}
+
+			if (!csgo->IsInGame()) {
+				WindowHANDLE = NULL; continue;
+			}
+
+			if (!cl_mouseenable.GetInt()) {
+				WindowHANDLE = NULL; continue;
+			}
 
 			RECT rect;
 			GetWindowRect(WindowHANDLE, &rect);
@@ -235,7 +217,7 @@ void VisCheckHandler()
 {
 	try {
 		for (;;) {
-			std::this_thread::sleep_for(std::chrono::milliseconds(50));			
+			std::this_thread::sleep_for(std::chrono::milliseconds(50));
 
 			if (!cfg->bspParsing)
 				continue;
@@ -245,20 +227,12 @@ void VisCheckHandler()
 			if (m_pMapDirectory.empty() || m_pGameDirectory.empty())
 				continue;
 
-			if (g_pBSPParser->parse_map(m_pGameDirectory, m_pMapDirectory)) {
-				/*static std::string last_map;
-				auto bsp_file = g_pBSPParser->get_bsp();
-
-				if (last_map != bsp_file.m_FileName) {
-					last_map = bsp_file.m_FileName;
-					std::cout << bsp_file << std::endl;
-				}*/
-			}
+			g_pBSPParser->parse_map(m_pGameDirectory, m_pMapDirectory);
 
 			if (csgo->IsInGame())
 			{
-				if (!csgo->IsTeamSelected())
-					continue;
+				/*if (!csgo->IsTeamSelected())
+					continue;*/
 
 				if (!LocalEntity.IsValid())
 					continue;
@@ -268,7 +242,8 @@ void VisCheckHandler()
 
 					if (!EntityList[iIndex].IsValid())
 						continue;
-					if (EntityList[iIndex].GetTeamNum() == LocalEntity.GetTeamNum())
+
+					if (csgo->IsInMyTeam(EntityList[iIndex].GetPointer()))
 						continue;
 
 					static Vector LocalPos, EntityPos;
@@ -292,14 +267,21 @@ void VisCheckHandler()
 	}
 }
 
-void GetDesktopResolution(HWND WindowHWND, int& horizontal, int& vertical)
-{
-	RECT desktop;
+void PrintInfoCMD() {
+	csgo->ClientCMD("clear");
 
-	GetWindowRect(GetDesktopWindow(), &desktop);
+	csgo->ClientCMD("echo \":: KateBot v1.0.8\"");
+	csgo->ClientCMD("echo");
 
-	horizontal = desktop.right;
-	vertical = desktop.bottom;
+	std::ostringstream ss;
+	ss << "echo \":: client_panorama.dll - 0x" << client->GetImage() << "\"";
+
+	csgo->ClientCMD(ss.str());
+
+	ss.str("");
+	ss.clear();
+	ss << "echo \":: engine.dll - 0x" << engine->GetImage() << "\"";
+	csgo->ClientCMD(ss.str());
 }
 
 DWORD WINAPI InitThread(LPVOID PARAMS)
@@ -354,8 +336,8 @@ DWORD WINAPI InitThread(LPVOID PARAMS)
 	client = mem->GetModule("client_panorama.dll");
 	engine = mem->GetModule("engine.dll");
 
-	printf("\n:: client_panorama.dll - %X", client->GetImage());
-	printf("\n:: engine.dll - %X\n", engine->GetImage());
+	printf("\n:: client_panorama.dll - 0x%X", client->GetImage());
+	printf("\n:: engine.dll - 0x%X\n", engine->GetImage());
 	Sleep(2000);
 
 	m_pGameDirectory = csgo->GetGameDirectory();
@@ -366,6 +348,8 @@ DWORD WINAPI InitThread(LPVOID PARAMS)
 	csgo->GlobalsSetup();
 	input_system::Init();
 	cvar::Init();
+
+	PrintInfoCMD();
 
 	thread tUpdateEntity = thread(UpdateEntity);
 	thread tVisCheckHandler(VisCheckHandler);
@@ -380,7 +364,10 @@ DWORD WINAPI InitThread(LPVOID PARAMS)
 	thread tBunnyhop(&Bunnyhop::Start, Bunnyhop());
 	thread tSkinchanger(&Skinchanger::Start, Skinchanger());
 	thread tRecoilCrosshair(&RecoilCrosshair::Start, RecoilCrosshair());
+	thread tSniperCrosshair(&SniperCrosshair::Start, SniperCrosshair());
 	thread tSkyBoxChanger(&SkyBoxChanger::Start, SkyBoxChanger());
+	thread tHitSound(&HitSound::Start, HitSound());
+	thread tRankReveal(&RankReveal::Start, RankReveal());
 	thread tShootManager(&ShootManager::Start, ShootManager());
 	thread tChams(&Chams::Start, Chams());
 	thread tRadar(&Radar::Start, Radar());
@@ -400,7 +387,10 @@ DWORD WINAPI InitThread(LPVOID PARAMS)
 	tTriggerbot.detach();
 	tBunnyhop.detach();
 	tRecoilCrosshair.detach();
+	tSniperCrosshair.detach();
 	tSkyBoxChanger.detach();
+	tHitSound.detach();
+	tRankReveal.detach();
 	tSkinchanger.detach();
 	tShootManager.detach();
 	tChams.detach();

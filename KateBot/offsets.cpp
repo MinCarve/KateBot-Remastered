@@ -24,11 +24,11 @@ void Ofs::FindOffsets() {
 	if (cfg->debugEnable)
 		c_netvars::get().dump();
 
-	static auto find_ptr = [](Module* mod, const char* sig, DWORD sig_add, DWORD off_add, bool sub_base = true) -> DWORD
+	static auto find_ptr = [](Module* mod, const char* sig, DWORD sig_add, DWORD off_add, bool sub_base = true, bool mode_read = true) -> DWORD
 	{
 		auto off = mem->FindPattern(mod, sig);
 		auto sb = sub_base ? mod->GetImage() : 0;
-		off = mem->Read<DWORD>(off + sig_add);
+		if (mode_read) off = mem->Read<DWORD>(off + sig_add);
 
 		return (!off ? 0 : off + off_add - sb);
 	};
@@ -37,7 +37,7 @@ void Ofs::FindOffsets() {
 
 	m_dwClientState = find_ptr(engine, "A1 ? ? ? ? 33 D2 6A 00 6A 00 33 C9 89 B0", 0x1, 0); // up
 	m_dwViewAngles = find_ptr(engine, "F3 0F 11 80 ? ? ? ? D9 46 04 D9 05", 0x4, 0, false); // up
-	m_dwInGame = find_ptr(engine, "83 B8 ? ? ? ? 06 0F 94 C0 C3", 0x2, 0, false); // unknown
+	m_dwGameState = find_ptr(engine, "83 B8 ? ? ? ? ? 0F 94 C0 C3", 0x2, 0, false); // unknown
 	m_nDeltaTick = find_ptr(engine, "C7 87 ? ? ? ? ? ? ? ? FF 15 ? ? ? ? 83 C4 08", 0x2, 0, false); // up
 	m_dwLocalPlayer = find_ptr(client, "8D 34 85 ? ? ? ? 89 15 ? ? ? ? 8B 41 08 8B 48 04 83 F9 FF", 0x3, 0x4); // up
 	m_dwEntityList = find_ptr(client, "BB ? ? ? ? 83 FF 01 0F 8C ? ? ? ? 3B F8", 0x1, 0); // up
@@ -52,7 +52,8 @@ void Ofs::FindOffsets() {
 	m_dwGlobalVars = find_ptr(engine, "68 ? ? ? ? 68 ? ? ? ? FF 50 08 85 C0", 0x1, 0); // up
 	m_dwPlayerResource = find_ptr(client, "8B 3D ? ? ? ? 85 FF 0F 84 ? ? ? ? 81 C7", 0x2, 0); // up
 	m_dwGameRulesProxy = find_ptr(client, "A1 ? ? ? ? 85 C0 0F 84 ? ? ? ? 80 B8 ? ? ? ? ? 74 7A", 0x1, 0);
-
+	m_dwClientCMD = find_ptr(engine, "55 8B EC 8B 0D ? ? ? ? 81 F9 ? ? ? ? 75 0C A1 ? ? ? ? 35 ? ? ? ? EB 05 8B 01 FF 50 34 50", 0, 0, true, false);
+	m_dwRankRevealAllFn = find_ptr(client, "55 8B EC 8B 0D ? ? ? ? 85 C9 75 28 A1 ? ? ? ? 68 ? ? ? ? 8B 08 8B 01 FF 50 04 85 C0 74 0B 8B C8 E8 ? ? ? ? 8B C8 EB 02 33 C9 89 0D ? ? ? ? 8B 45 08", 0, 0, true, false);
 	modelAmbientMin = find_ptr(engine, "F3 0F 10 0D ? ? ? ? F3 0F 11 4C 24 ? 8B 44 24 20 35 ? ? ? ? 89 44 24 0C", 0x4, 0); // up
 
 	m_hActiveWeapon = GET_NETVAR("DT_BaseCombatCharacter", "m_hActiveWeapon");
@@ -68,6 +69,8 @@ void Ofs::FindOffsets() {
 	m_lifeState = GET_NETVAR("DT_BasePlayer", "m_lifeState");
 	m_bSpotted = GET_NETVAR("DT_BaseEntity", "m_bSpotted");
 	m_bSpottedByMask = GET_NETVAR("DT_BaseEntity", "m_bSpottedByMask");
+	m_bIsScoped = GET_NETVAR("DT_CSPlayer", "m_bIsScoped");
+	m_zoomLevel = GET_NETVAR("DT_WeaponCSBaseGun", "m_zoomLevel");
 	m_vecOrigin = GET_NETVAR("DT_BaseEntity", "m_vecOrigin");
 	m_vecViewOffset = GET_NETVAR("DT_BasePlayer", "m_vecViewOffset[0]");
 	m_angEyeAngles = GET_NETVAR("DT_CSPlayer", "m_angEyeAngles");
@@ -122,7 +125,7 @@ bool Ofs::CheckOffsets()
 
 	CHECK_OFFSET(m_dwClientState);
 	CHECK_OFFSET(m_dwViewAngles);
-	CHECK_OFFSET(m_dwInGame);
+	CHECK_OFFSET(m_dwGameState);
 	CHECK_OFFSET(m_nDeltaTick);
 	CHECK_OFFSET(m_dwLocalPlayer);
 	CHECK_OFFSET(m_dwEntityList);

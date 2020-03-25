@@ -428,6 +428,8 @@ public:
 					continue;
 				}
 
+				if(!MouseEnable()) continue;
+
 				int work = LocalEntity.GetShotsFired();
 
 				anglesToAim = GetAimbotAngles();
@@ -483,6 +485,12 @@ public:
 		catch (...) {
 			mem->debuglog(__FILE__);
 		}
+	}
+
+	int MouseEnable() {
+		static auto cl_mouseenable = cvar::find("cl_mouseenable");
+
+		return cl_mouseenable.GetInt();
 	}
 
 	float GetSensitivity(void) {

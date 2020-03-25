@@ -23,6 +23,8 @@ public:
 	bool SkyBoxChanger = false;
 	bool ViewModelFOVChanger = false;
 	bool DisablePostProcessing = false;
+	bool SniperCrosshair = false;
+	bool RevealRank = false;
 	bool RiflesAdaptiveSmooth = false;
 	bool PistolsAdaptiveSmooth = false;
 	bool SnipersAdaptiveSmooth = false;

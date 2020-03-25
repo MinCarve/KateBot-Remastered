@@ -18,12 +18,15 @@
     <ClInclude Include="KateBot\cheats\FastReload.h" />
     <ClInclude Include="KateBot\cheats\GlowESP.h" />
     <ClInclude Include="KateBot\cheats\GrenadePrediction.h" />
+    <ClInclude Include="KateBot\cheats\HitSound.h" />
     <ClInclude Include="KateBot\cheats\NightMode.h" />
     <ClInclude Include="KateBot\cheats\PostProcessing.h" />
     <ClInclude Include="KateBot\cheats\Radar.h" />
+    <ClInclude Include="KateBot\cheats\RankReveal.h" />
     <ClInclude Include="KateBot\cheats\RecoilCrosshair.h" />
     <ClInclude Include="KateBot\cheats\Skinchanger.h" />
     <ClInclude Include="KateBot\cheats\SkyBoxChanger.h" />
+    <ClInclude Include="KateBot\cheats\SniperCrosshair.h" />
     <ClInclude Include="KateBot\cheats\Triggerbot.h" />
     <ClInclude Include="KateBot\cheats\ViewModelFOV.h" />
     <ClInclude Include="KateBot\config.h" />

@@ -4,6 +4,11 @@
 cs_virtual_table	cs_vt_inputsystem;
 uint32_t			cs_nv_m_dwButton;
 
+uintptr_t input_system::GetPointer(void)
+{
+	return cs_vt_inputsystem.address();
+}
+
 bool input_system::IsButtonDown(ButtonCode_t button) {
 	uint32_t v;
 

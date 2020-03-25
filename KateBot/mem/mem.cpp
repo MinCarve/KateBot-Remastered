@@ -272,6 +272,23 @@ uintptr_t Mem::FindExport(uintptr_t module, const char* name)
 	}
 	return 0;
 }
+
+DWORD Mem::AllocMem(size_t size)
+{
+	return (DWORD)VirtualAllocEx(mem->m_hProcess, nullptr, size, MEM_RESERVE | MEM_COMMIT, PAGE_EXECUTE_READWRITE);
+}
+
+bool Mem::Free(void* _address, size_t _size)
+{
+	return VirtualFreeEx(this->m_hProcess, _address, _size, MEM_RELEASE);
+}
+
+void Mem::CRT(void* shellcode, void* parameter) {
+	HANDLE Thread = CreateRemoteThread(this->m_hProcess, nullptr, NULL, static_cast<LPTHREAD_START_ROUTINE>(shellcode), parameter, NULL, nullptr);
+	WaitForSingleObject(Thread, INFINITE);
+	CloseHandle(Thread);
+}
+
 DWORD Mem::GetProcessIdByName(const std::string& name)
 {
 	HANDLE hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, NULL);

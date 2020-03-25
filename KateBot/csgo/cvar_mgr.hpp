@@ -23,6 +23,7 @@ namespace interfaces {
 class cs_convar {
     uintptr_t       self;
 public:
+    uintptr_t       GetPointer(void);
     cs_convar       Next(void);
     cs_convar       Parent(void);
     std::string     GetName(void);

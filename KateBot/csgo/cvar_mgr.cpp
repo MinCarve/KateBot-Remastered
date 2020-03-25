@@ -49,6 +49,11 @@ cs_convar cvar::find(std::string name) {
     return {};
 }
 
+uintptr_t cs_convar::GetPointer(void)
+{
+    return self;
+}
+
 cs_convar cs_convar::Next(void)
 {
     int cvar = mem->Read<int>(self + 0x4);

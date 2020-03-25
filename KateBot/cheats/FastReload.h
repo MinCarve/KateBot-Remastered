@@ -8,7 +8,7 @@ public:
 	void Start() {
 		try {
 			for (;;) {
-				std::this_thread::sleep_for(std::chrono::milliseconds(70));
+				std::this_thread::sleep_for(std::chrono::milliseconds(30));
 
 				if (cfg->panicMode)
 					continue;
@@ -22,14 +22,15 @@ public:
 				if (!csgo->IsInGame())
 					continue;
 
-				int  m_bReloadVisuallyComplete = mem->Read<int>(LocalEntity.GetActiveWeaponBase() + ofs->m_bReloadVisuallyComplete), ammo = LocalEntity.GetActiveWeaponAmmo();
+				if (!MouseEnable()) continue;
+
+				bool m_bReloadVisuallyComplete = mem->Read<bool>(LocalEntity.GetActiveWeaponBase() + ofs->m_bReloadVisuallyComplete), ammo = LocalEntity.GetActiveWeaponAmmo();
 
 				if (mem->Read<bool>(LocalEntity.GetActiveWeaponBase() + ofs->m_bInReload) &&
-					(m_bReloadVisuallyComplete == 1 || m_bReloadVisuallyComplete == 257) &&
-					ammo != this->TEMPORARY_AMMO_VAR)
+					m_bReloadVisuallyComplete && ammo != this->TEMPORARY_AMMO_VAR)
 				{
 					this->TEMPORARY_AMMO_VAR = ammo;
-					this->Reload();
+					this->CMD_Reload();
 					this->TEMPORARY_AMMO_VAR = NULL;
 				}
 			}
@@ -37,6 +38,12 @@ public:
 		catch (...) {
 			mem->debuglog(__FILE__);
 		}
+	}
+
+	int MouseEnable() {
+		static auto cl_mouseenable = cvar::find("cl_mouseenable");
+
+		return cl_mouseenable.GetInt();
 	}
 
 	void Reload() {
@@ -47,6 +54,12 @@ public:
 		keybd_event(VkKeyScan('Q'), 0x10, 0, 0);
 		Sleep(10);
 		keybd_event(VkKeyScan('Q'), 0x10, KEYEVENTF_KEYUP, 0);
+	}
+
+	void CMD_Reload() {
+		csgo->ClientCMD("invprev");
+		Sleep(20);
+		csgo->ClientCMD("invnext");
 	}
 private:
 	int TEMPORARY_AMMO_VAR = NULL;

@@ -34,6 +34,8 @@ public:
 
 	GlobalVarsBase GlobalVars();
 
+	void		ClientCMD(std::string cmd);
+
 	int			GetLocalPlayer();
 	int 		GetMaxObjects();
 	int			GetMaxEntities();

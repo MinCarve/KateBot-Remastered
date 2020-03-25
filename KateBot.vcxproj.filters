@@ -142,6 +142,15 @@
     <ClInclude Include="KateBot\csgo\input_system.hpp">
       <Filter>Source Files\csgo</Filter>
     </ClInclude>
+    <ClInclude Include="KateBot\cheats\SniperCrosshair.h">
+      <Filter>Source Files\cheats</Filter>
+    </ClInclude>
+    <ClInclude Include="KateBot\cheats\HitSound.h">
+      <Filter>Source Files\cheats</Filter>
+    </ClInclude>
+    <ClInclude Include="KateBot\cheats\RankReveal.h">
+      <Filter>Source Files\cheats</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KateBot\config.cpp">
