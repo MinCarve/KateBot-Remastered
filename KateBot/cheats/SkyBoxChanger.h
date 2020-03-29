@@ -7,10 +7,7 @@ class SkyBoxChanger {
 public:
 
 	~SkyBoxChanger() {
-		std::unique_ptr<char[]> ptr = std::make_unique<char[]>(120);
-		mem->Read(engine->GetImage() + 0x7A797C, ptr.get(), 120);
-
-		C_SkyboxName(std::string(ptr.get()));
+		SET_SN(this->DefaultSkyBoxName());
 	}
 
 	void Start() {
@@ -27,23 +24,15 @@ public:
 				if (!csgo->IsInGame())
 					continue;
 
-				//std::unordered_map<std::string, std::string>::const_iterator select_map = this->maps_by_skybox.find("maps/de_dust2.bsp");
-				/*for (auto it = this->maps_by_skybox.cbegin(); it != this->maps_by_skybox.cend(); ++it)
-					if (std::string("maps/de_dust2.bsp").find(it->first) != std::string::npos)
-						printf("select_map: %s\n", it->second.c_str());*/
-
-				std::unique_ptr<char[]> ptr = std::make_unique<char[]>(120);
-				mem->Read(engine->GetImage() + 0x7A797C, ptr.get(), 120);
-
-				C_3DSky(FALSE);
+				SET_3DSKY(FALSE);
 
 				if (!cfg->StreamMode)
 					if (cfg->SkyBoxChanger) {
-						C_SkyboxName(cfg->skybox.name);
+						SET_SN(cfg->skybox.name);
 					}else
-						C_SkyboxName(std::string(ptr.get()));
+						SET_SN(std::string(this->DefaultSkyBoxName()));
 				else
-					C_SkyboxName(std::string(ptr.get()));
+					SET_SN(std::string(this->DefaultSkyBoxName()));
 
 			}
 		}
@@ -52,29 +41,24 @@ public:
 		}
 	}
 
-	void C_SkyboxName(std::string value) {
-		static auto sv_skyname = cvar::find("sv_skyname");
+	auto DefaultSkyBoxName() -> std::string {
+		std::unique_ptr<char[]> ptr = std::make_unique<char[]>(120);
+		mem->Read(engine->GetImage() + 0x7A78FC, ptr.get(), 120);
 
-		sv_skyname.SetString(value);
+		return std::string(ptr.get());
 	}
 
-	int R_SkyboxName() {
-		static auto sv_skyname = cvar::find("sv_skyname");
+	void SET_SN(std::string v) {
+		static cs_convar sv_skyname = cvar::find("sv_skyname");
 
-		return sv_skyname.GetInt();
+		sv_skyname.SetString(v);
 	}
 
-	void C_3DSky(bool value) {
-		static auto r_3dsky = cvar::find("r_3dsky");
+	void SET_3DSKY(bool v) {
+		static cs_convar r_3dsky = cvar::find("r_3dsky");
 
-		r_3dsky.SetInt(value);
+		r_3dsky.SetInt(v);
 	}
-private:
-	std::unordered_map<std::string, std::string> maps_by_skybox =
-	{
-		{ "ar_baggage", "cs_baggage_skybox_" }, { "cs_office", "sky_cs15_daylight01_hdr" },
-		{ "de_dust2", "nukeblank" }
-	};
 };
 
 #endif

@@ -36,12 +36,14 @@ void Ofs::FindOffsets() {
 	m_dwIndex = 0x64;
 
 	m_dwClientState = find_ptr(engine, "A1 ? ? ? ? 33 D2 6A 00 6A 00 33 C9 89 B0", 0x1, 0); // up
+	m_dwClientState_PlayerInfo = find_ptr(engine, "8B 89 ? ? ? ? 85 C9 0F 84 ? ? ? ? 8B 01", 0x2, 0, false); // up
 	m_dwViewAngles = find_ptr(engine, "F3 0F 11 80 ? ? ? ? D9 46 04 D9 05", 0x4, 0, false); // up
 	m_dwGameState = find_ptr(engine, "83 B8 ? ? ? ? ? 0F 94 C0 C3", 0x2, 0, false); // unknown
 	m_nDeltaTick = find_ptr(engine, "C7 87 ? ? ? ? ? ? ? ? FF 15 ? ? ? ? 83 C4 08", 0x2, 0, false); // up
 	m_dwLocalPlayer = find_ptr(client, "8D 34 85 ? ? ? ? 89 15 ? ? ? ? 8B 41 08 8B 48 04 83 F9 FF", 0x3, 0x4); // up
 	m_dwEntityList = find_ptr(client, "BB ? ? ? ? 83 FF 01 0F 8C ? ? ? ? 3B F8", 0x1, 0); // up
 	m_dwGlowObject = find_ptr(client, "A1 ? ? ? ? A8 01 75 4B", 0x1, 0x4); // up
+	m_dwRadarBase = find_ptr(client, "A1 ? ? ? ? 8B 0C B0 8B 01 FF 50 ? 46 3B 35 ? ? ? ? 7C EA 8B 0D", 0x1, 0); // up
 	m_dwForceJump = find_ptr(client, "8B 0D ? ? ? ? 8B D6 8B C1 83 CA 02", 0x2, 0); // up
 	m_dwForceBackward = find_ptr(client, "55 8B EC 51 53 8A 5D 08", 287, 0); // up
 	m_dwForceForward = find_ptr(client, "55 8B EC 51 53 8A 5D 08", 285, 0); // up
@@ -57,6 +59,12 @@ void Ofs::FindOffsets() {
 	modelAmbientMin = find_ptr(engine, "F3 0F 10 0D ? ? ? ? F3 0F 11 4C 24 ? 8B 44 24 20 35 ? ? ? ? 89 44 24 0C", 0x4, 0); // up
 
 	m_hActiveWeapon = GET_NETVAR("DT_BaseCombatCharacter", "m_hActiveWeapon");
+	m_totalRoundsPlayed = GET_NETVAR("DT_CSGameRulesProxy", "m_totalRoundsPlayed");
+	m_iMatchStats_RoundResults = GET_NETVAR("DT_CSGameRulesProxy", "m_iMatchStats_RoundResults");
+	m_bHasMatchStarted = GET_NETVAR("DT_CSGameRulesProxy", "m_bHasMatchStarted");
+	m_iCompetitiveRanking = GET_NETVAR("DT_CSPlayerResource", "m_iCompetitiveRanking");
+	m_iCompetitiveWins = GET_NETVAR("DT_CSPlayerResource", "m_iCompetitiveWins");
+	m_bWarmupPeriod = GET_NETVAR("DT_CSGameRulesProxy", "m_bWarmupPeriod");
 	m_iCrossHairID = GET_NETVAR("DT_CSPlayer", "m_bHasDefuser") + 0x5C;
 	m_iHealth = GET_NETVAR("DT_BasePlayer", "m_iHealth");
 	m_iMaxHealth = GET_NETVAR("DT_CHostage", "m_iMaxHealth");

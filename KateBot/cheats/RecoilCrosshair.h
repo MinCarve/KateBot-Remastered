@@ -7,7 +7,7 @@ class RecoilCrosshair {
 public:
 
 	~RecoilCrosshair() {
-		C_RecoilCrosshair(0);
+		SET_RC(0);
 	}
 
 	void Start() {
@@ -26,12 +26,12 @@ public:
 						(LocalEntity.GetWeaponType(0) == EWeaponType::WeapType_Rifle 
 							|| LocalEntity.GetWeaponType(0) == EWeaponType::WeapType_SMG
 								|| LocalEntity.GetWeaponType(0) == EWeaponType::WeapType_LMG)) {
-						C_RecoilCrosshair(TRUE);
+						SET_RC(TRUE);
 					}
 					else
-						C_RecoilCrosshair(FALSE);
+						SET_RC(FALSE);
 				else
-					C_RecoilCrosshair(FALSE);
+					SET_RC(FALSE);
 			}
 		}
 		catch (...) {
@@ -39,10 +39,10 @@ public:
 		}
 	}
 
-	void C_RecoilCrosshair(bool value) {
-		static auto cl_crosshair_recoil = cvar::find("cl_crosshair_recoil");
+	void SET_RC(bool v) {
+		static cs_convar cl_crosshair_recoil = cvar::find("cl_crosshair_recoil");
 
-		cl_crosshair_recoil.SetFloat(value);
+		cl_crosshair_recoil.SetFloat(v);
 	}
 };
 

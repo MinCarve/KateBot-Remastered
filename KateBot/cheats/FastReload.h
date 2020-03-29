@@ -24,14 +24,12 @@ public:
 
 				if (!MouseEnable()) continue;
 
-				bool m_bReloadVisuallyComplete = mem->Read<bool>(LocalEntity.GetActiveWeaponBase() + ofs->m_bReloadVisuallyComplete), ammo = LocalEntity.GetActiveWeaponAmmo();
+				int m_bReloadVisuallyComplete = mem->Read<int>(LocalEntity.GetActiveWeaponBase() + ofs->m_bReloadVisuallyComplete), ammo = LocalEntity.GetActiveWeaponAmmo();
 
 				if (mem->Read<bool>(LocalEntity.GetActiveWeaponBase() + ofs->m_bInReload) &&
-					m_bReloadVisuallyComplete && ammo != this->TEMPORARY_AMMO_VAR)
+					(m_bReloadVisuallyComplete == 1 || m_bReloadVisuallyComplete == 257))
 				{
-					this->TEMPORARY_AMMO_VAR = ammo;
 					this->CMD_Reload();
-					this->TEMPORARY_AMMO_VAR = NULL;
 				}
 			}
 		}
@@ -61,8 +59,6 @@ public:
 		Sleep(20);
 		csgo->ClientCMD("invnext");
 	}
-private:
-	int TEMPORARY_AMMO_VAR = NULL;
 };
 
 #endif

@@ -27,7 +27,15 @@ public:
 	DWORD m_dwClientState;
 	DWORD m_dwClientCMD;
 	DWORD m_dwRankRevealAllFn;
+	DWORD m_totalRoundsPlayed;
+	DWORD m_bWarmupPeriod;
+	DWORD m_iMatchStats_RoundResults;
+	DWORD m_bHasMatchStarted;
+	DWORD m_iCompetitiveRanking;
+	DWORD m_iCompetitiveWins;
 	DWORD m_dwGlowObject;
+	DWORD m_dwRadarBase;
+	DWORD m_dwClientState_PlayerInfo;
 	DWORD m_dwForceJump;
 	DWORD m_dwForceForward;
 	DWORD m_dwForceBackward;

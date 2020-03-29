@@ -51,6 +51,7 @@ void Config::LoadConfig()
 	DisablePostProcessing = g_pFiles->ReadBool("Features", "DisablePostProcessing.Enable");
 	SniperCrosshair = g_pFiles->ReadBool("Features", "SniperCrosshair.Enable");
 	RevealRank = g_pFiles->ReadBool("Features", "RevealRank.Enable");
+	ThirdPerson = g_pFiles->ReadBool("Features", "ThirdPerson.Enable");
 	hitsound = g_pFiles->ReadBool("Features", "HitSound.Enable");
 	glowEspEnabled = g_pFiles->ReadBool("Features", "GlowESP.Enable");
 	aimbotEnabled = g_pFiles->ReadBool("Features", "Aimbot.Enable");

@@ -7,7 +7,7 @@ class PostProcessing {
 public:
 
 	~PostProcessing() {
-		C_MatPostProcessEnable(1);
+		SET_MPPE(1);
 	}
 
 	void Start() {
@@ -26,12 +26,12 @@ public:
 
 				if (!cfg->StreamMode)
 					if (cfg->DisablePostProcessing) {
-						C_MatPostProcessEnable(0);
+						SET_MPPE(0);
 					}
 					else
-						C_MatPostProcessEnable(1);
+						SET_MPPE(1);
 				else
-					C_MatPostProcessEnable(1);
+					SET_MPPE(1);
 
 			}
 		}
@@ -40,10 +40,10 @@ public:
 		}
 	}
 
-	void C_MatPostProcessEnable(int value) {
-		static auto mat_postprocess_enable = cvar::find("mat_postprocess_enable");
+	void SET_MPPE(int v) {
+		static cs_convar mat_postprocess_enable = cvar::find("mat_postprocess_enable");
 
-		mat_postprocess_enable.SetInt(value);
+		mat_postprocess_enable.SetInt(v);
 	}
 };
 

@@ -22,23 +22,21 @@ public:
 				if (!cfg->hitsound)
 					continue;
 
-				this->total_hits = mem->Read<int>(LocalEntity.GetPointer() + ofs->m_totalHitsOnServer);
+				static int hits = LocalEntity.GetTotalHits();
+				int current_hits = LocalEntity.GetTotalHits();
 
-				if (this->total_hits > this->hits)
+				if (hits != current_hits && current_hits != 0)
 				{
-					this->hits = this->total_hits;
-
+					hits = current_hits;
 					csgo->ClientCMD("play buttons/arena_switch_press_02");
 				}
+
 			}
 		}
 		catch (...) {
 			mem->debuglog(__FILE__);
 		}
 	}
-private:
-	int hits = mem->Read<int>(LocalEntity.GetPointer() + ofs->m_totalHitsOnServer);
-	int total_hits = -1;
 };
 
 #endif

@@ -38,12 +38,16 @@ public:
 	bool		IsActiveWeaponPistol();
 	EWeaponType GetWeaponType(int id);
 
-	int			GetTeamNum();
-	int			GetSurvivalTeam();
-	int			GetHealth();
-	int			GetFlags();
-	int			GetCrosshairEnt();
-	int 		GetIndex();
+	player_info_t	GetProfileInfo();
+	int				GetRank();
+	int				GetWins();
+	int				GetTeamNum();
+	int				GetSurvivalTeam();
+	int				GetHealth();
+	int				GetFlags();
+	int				GetTotalHits();
+	int				GetCrosshairEnt();
+	int 			GetIndex();
 
 	bool		IsValid();
 	bool		IsPlayer();
@@ -77,6 +81,7 @@ private:
 	Vector			m_vPunch;
 	Vector			m_vVelocity;
 
+	char			m_dwName;
 	int				m_iTeamNum;
 	int				m_nSurvivalTeam;
 	int				m_iHealth;
@@ -87,6 +92,7 @@ private:
 	int 			m_iShotsFired;
 	int 			m_dwIndex;
 	int 			m_bSpotted;
+	int				m_totalHitsOnServer;
 
 	bool			m_bDead;
 	bool			m_bIsDormant;

@@ -157,11 +157,12 @@ void UpdateEntity()
 				Sleep(200);
 			}
 
-			if (cfg->StreamMode) {
+			/*if (cfg->StreamMode) {
 				csgo->ClientCMD("clear");
-			}
+			}*/
 
-			if (!miscUtils->DoesCSGOExist()) exit(0);
+			if (!cfg->debugEnable)
+				if (!miscUtils->DoesCSGOExist()) exit(0);
 
 			if (!miscUtils->CheckCSGOWindowState())
 				continue;
@@ -190,22 +191,14 @@ void PrimaryMonitorLock(HWND WindowHANDLE) {
 		{
 			std::this_thread::sleep_for(std::chrono::milliseconds(1));
 
-			if (!miscUtils->IsCSGOActiveWindow()) {
-				WindowHANDLE = NULL; continue;
+			if (miscUtils->IsCSGOActiveWindow() && csgo->IsInGame() && cl_mouseenable.GetInt()) {
+				RECT rect;
+				GetWindowRect(WindowHANDLE, &rect);
+
+				ClipCursor(&rect);
 			}
-
-			if (!csgo->IsInGame()) {
-				WindowHANDLE = NULL; continue;
-			}
-
-			if (!cl_mouseenable.GetInt()) {
-				WindowHANDLE = NULL; continue;
-			}
-
-			RECT rect;
-			GetWindowRect(WindowHANDLE, &rect);
-
-			ClipCursor(&rect);
+			else
+				ClipCursor(NULL);
 		}
 	}
 	catch (...) {
@@ -349,7 +342,7 @@ DWORD WINAPI InitThread(LPVOID PARAMS)
 	input_system::Init();
 	cvar::Init();
 
-	PrintInfoCMD();
+	//PrintInfoCMD();
 
 	thread tUpdateEntity = thread(UpdateEntity);
 	thread tVisCheckHandler(VisCheckHandler);

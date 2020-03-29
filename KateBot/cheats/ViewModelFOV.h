@@ -7,7 +7,7 @@ class ViewModelFOVChanger {
 public:
 
 	~ViewModelFOVChanger() {
-		C_ViewModelFOV(D_ViewModelFOV());
+		SET_VMFOV(GET_VMFOV());
 	}
 
 	void Start() {
@@ -26,12 +26,12 @@ public:
 
 				if (!cfg->StreamMode)
 					if (cfg->ViewModelFOVChanger) {
-						C_ViewModelFOV(cfg->viewmodel.fov);
+						SET_VMFOV(cfg->viewmodel.fov);
 					}
 					else
-						C_ViewModelFOV(D_ViewModelFOV());
+						SET_VMFOV(GET_VMFOV());
 				else
-					C_ViewModelFOV(D_ViewModelFOV());
+					SET_VMFOV(GET_VMFOV());
 
 			}
 		}
@@ -40,14 +40,14 @@ public:
 		}
 	}
 
-	void C_ViewModelFOV(float value) {
-		static auto viewmodel_fov = cvar::find("viewmodel_fov");
+	void SET_VMFOV(float v) {
+		static cs_convar viewmodel_fov = cvar::find("viewmodel_fov");
 
-		viewmodel_fov.SetFloat(value);
+		viewmodel_fov.SetFloat(v);
 	}
 
-	float D_ViewModelFOV(void) {
-		static auto viewmodel_fov = cvar::find("viewmodel_fov");
+	float GET_VMFOV() {
+		static cs_convar viewmodel_fov = cvar::find("viewmodel_fov");
 
 		return std::stof(viewmodel_fov.GetDefaultValue());
 	}

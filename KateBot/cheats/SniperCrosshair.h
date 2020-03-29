@@ -5,13 +5,14 @@
 
 class SniperCrosshair {
 public:
-
+	
 	~SniperCrosshair() {
-		C_SniperCrosshair(0);
+		SET_WDSS(0);
 	}
 
 	void Start() {
 		try {
+
 			for (;;) {
 				std::this_thread::sleep_for(std::chrono::milliseconds(35));
 
@@ -28,15 +29,15 @@ public:
 					if (cfg->SniperCrosshair)
 						if (LocalEntity.GetWeaponType(0) == EWeaponType::WeapType_Sniper)
 							if (!mem->Read<bool>(LocalEntity.GetPointer() + ofs->m_bIsScoped))
-								C_SniperCrosshair(3);
+								SET_WDSS(3);
 							else
-								C_SniperCrosshair(0);
+								SET_WDSS(0);
 						else
-							C_SniperCrosshair(0);
+							SET_WDSS(0);
 					else
-						C_SniperCrosshair(0);
+						SET_WDSS(0);
 				else
-					C_SniperCrosshair(0);
+					SET_WDSS(0);
 
 			}
 		}
@@ -45,12 +46,11 @@ public:
 		}
 	}
 
-	void C_SniperCrosshair(int value) {
-		static auto weapon_debug_spread_show = cvar::find("weapon_debug_spread_show");
+	void SET_WDSS(int v) {
+		static cs_convar weapon_debug_spread_show = cvar::find("weapon_debug_spread_show");
 
-		weapon_debug_spread_show.SetInt(value);
+		weapon_debug_spread_show.SetInt(v);
 	}
-private:
 };
 
 #endif

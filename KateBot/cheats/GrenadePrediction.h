@@ -7,7 +7,7 @@ class GrenadePrediction {
 public:
 
 	~GrenadePrediction() {
-		GrenadePreview(0);
+		SET_GP(0);
 	}
 
 	void Start() {
@@ -26,11 +26,11 @@ public:
 
 				if (!cfg->StreamMode)
 					if (cfg->GrenadePrediction)
-						GrenadePreview(TRUE);
+						SET_GP(TRUE);
 					else
-						GrenadePreview(FALSE);
+						SET_GP(FALSE);
 				else
-					GrenadePreview(FALSE);
+					SET_GP(FALSE);
 			}
 		}
 		catch (...) {
@@ -38,10 +38,10 @@ public:
 		}
 	}
 
-	void GrenadePreview(bool value) {
-		static auto cl_grenadepreview = cvar::find("cl_grenadepreview");
+	void SET_GP(bool v) {
+		static cs_convar cl_grenadepreview = cvar::find("cl_grenadepreview");
 
-		cl_grenadepreview.SetInt(value);
+		cl_grenadepreview.SetInt(v);
 	}
 };
 

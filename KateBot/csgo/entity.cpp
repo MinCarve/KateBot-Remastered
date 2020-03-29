@@ -65,6 +65,7 @@ void Entity::Update(int iIndex)
 	m_bIsDormant = *reinterpret_cast<bool*>(chunk + ofs->m_bDormant);
 	m_i64SpottedByMask = *reinterpret_cast<INT64*>(chunk + ofs->m_bSpottedByMask);
 	m_bSpotted = *reinterpret_cast<int*>(chunk + ofs->m_bSpotted);
+	m_totalHitsOnServer = *reinterpret_cast<int*>(chunk + ofs->m_totalHitsOnServer);
 
 	if (!cfg->bspParsing)
 		CheckVisible();
@@ -259,6 +260,33 @@ EWeaponType Entity::GetWeaponType(int id)
 	}
 }
 
+player_info_t Entity::GetProfileInfo()
+{
+	const size_t ECX_DISP = 0x40;
+	const size_t EDX_DISP = 0x0C;
+	const size_t INFO_OFFSET = 0x28;
+	const size_t ENTRY_SIZE = 0x34;
+
+	uintptr_t ecx = mem->Read<uintptr_t>(ofs->m_dwClientState + ofs->m_dwClientState_PlayerInfo);
+	uintptr_t edx = mem->Read<uintptr_t>(ecx + ECX_DISP);
+	uintptr_t eax = mem->Read<uintptr_t>(edx + EDX_DISP);
+	uintptr_t profile_info = mem->Read<uintptr_t>(eax + INFO_OFFSET + (this->GetIndex() - 1) * ENTRY_SIZE);
+
+	return mem->Read<player_info_t>(profile_info);
+}
+
+int Entity::GetRank()
+{
+	uintptr_t GameResources = mem->Read<uintptr_t>(client->GetImage() + ofs->m_dwPlayerResource);
+	return mem->Read<int>(GameResources + ofs->m_iCompetitiveRanking + this->GetIndex() * 4);
+}
+
+int Entity::GetWins()
+{
+	uintptr_t GameResources = mem->Read<uintptr_t>(client->GetImage() + ofs->m_dwPlayerResource);
+	return mem->Read<int>(GameResources + ofs->m_iCompetitiveWins + (this->GetIndex() * 4));
+}
+
 int Entity::GetTeamNum()
 {
 	return m_iTeamNum;
@@ -292,6 +320,11 @@ int Entity::GetIndex()
 int Entity::GetFlags()
 {
 	return m_iFlags;
+}
+
+int Entity::GetTotalHits()
+{
+	return m_totalHitsOnServer;
 }
 
 bool Entity::IsValid()

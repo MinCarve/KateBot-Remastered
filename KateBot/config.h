@@ -25,6 +25,7 @@ public:
 	bool DisablePostProcessing = false;
 	bool SniperCrosshair = false;
 	bool RevealRank = false;
+	bool ThirdPerson = false;
 	bool RiflesAdaptiveSmooth = false;
 	bool PistolsAdaptiveSmooth = false;
 	bool SnipersAdaptiveSmooth = false;
@@ -63,6 +64,7 @@ public:
 		int radar_toggle;
 		int skinchanger_toggle;
 		int streamode_toggle;
+		int thirdperson_toggle;
 	}keys;
 
 	struct aimbot {

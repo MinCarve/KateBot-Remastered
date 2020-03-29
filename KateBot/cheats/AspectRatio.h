@@ -7,7 +7,7 @@ class AspectRatio {
 public:
 
 	~AspectRatio() {
-		C_AspectRatio(0);
+		SET_AR(0);
 	}
 
 	void Start() {
@@ -26,11 +26,11 @@ public:
 
 				if (!cfg->StreamMode)
 					if (cfg->AspectRatio)
-						C_AspectRatio((cfg->aspect_ratio.value * 0.1) / 2);
+						SET_AR((cfg->aspect_ratio.value * 0.1) / 2);
 					else
-						C_AspectRatio(0);
+						SET_AR(0);
 				else
-					C_AspectRatio(0);
+					SET_AR(0);
 			}
 		}
 		catch (...) {
@@ -38,10 +38,10 @@ public:
 		}
 	}
 
-	void C_AspectRatio(float value) {
-		static auto r_aspectratio = cvar::find("r_aspectratio");
+	void SET_AR(float v) {
+		static cs_convar r_aspectratio = cvar::find("r_aspectratio");
 
-		r_aspectratio.SetFloat(value);
+		r_aspectratio.SetFloat(v);
 	}
 };
 
