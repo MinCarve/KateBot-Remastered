@@ -1,7 +1,4 @@
 #include "main.h"
-#include "httplib.h"
-
-bool g_IsPanorama{};
 
 std::unique_ptr< Valve::BSPParser > g_pBSPParser = std::make_unique< Valve::BSPParser >();
 std::string m_pGameDirectory;

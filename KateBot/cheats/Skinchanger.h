@@ -11,10 +11,7 @@ public:
 		try {
 			while (true)
 			{
-				std::this_thread::sleep_for(std::chrono::milliseconds(1));
-
-				if (cfg->panicMode)
-					continue;
+				if (!cfg->general_skin.auto_update) std::this_thread::sleep_for(std::chrono::milliseconds(1));
 
 				if (!miscUtils->IsCSGOActiveWindow())
 					continue;
@@ -90,8 +87,10 @@ public:
 
 				short ActiveWeaponID = mem->Read<short>(ActiveWeapon + ofs->m_iItemDefinitionIndex);
 				if (ActiveWeaponID != this->knife_index) continue;
-				if (LocalEntity.GetWeaponType(ActiveWeaponID) == EWeaponType::WeapType_KnifeType && 
-					ActiveWeaponID != this->knife_index) { this->UpdateModelIndex(); continue; }
+				if (LocalEntity.GetWeaponType(ActiveWeaponID) == EWeaponType::WeapType_KnifeType &&
+					ActiveWeaponID != this->knife_index) {
+					this->UpdateModelIndex(); continue;
+				}
 
 				DWORD ActiveViewModel = mem->Read<DWORD>(this->LocalPlayer + ofs->m_hViewModel) & 0xfff;
 				ActiveViewModel = mem->Read<DWORD>(client->GetImage() + ofs->m_dwEntityList + (ActiveViewModel - 1) * 0x10);

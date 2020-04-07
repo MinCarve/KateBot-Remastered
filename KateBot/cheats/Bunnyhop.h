@@ -13,9 +13,6 @@ public:
 			{
 				std::this_thread::sleep_for(std::chrono::milliseconds(5));
 
-				if (cfg->panicMode)
-					continue;
-
 				if (!miscUtils->IsCSGOActiveWindow())
 					continue;
 

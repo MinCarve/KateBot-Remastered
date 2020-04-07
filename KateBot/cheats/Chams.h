@@ -18,9 +18,6 @@ public:
 			for (;;) {
 				std::this_thread::sleep_for(std::chrono::milliseconds(16));
 
-				if (cfg->panicMode)
-					continue;
-
 				if (!miscUtils->IsCSGOActiveWindow())
 					continue;
 
@@ -35,11 +32,11 @@ public:
 				NeedUpdateChams = true;
 				DWORD CSPlayerResource = mem->Read<DWORD>(client->GetImage() + ofs->m_dwPlayerResource);
 
-				ColorESP EnemyColor = ColorESP::Colors->CfgColor(cfg->chams.enemycolor);
-				ColorESP AllyColor = ColorESP::Colors->CfgColor(cfg->chams.allycolor);
+				ColorESP EnemyColor = Colors->CfgColor(cfg->chams.enemycolor);
+				ColorESP AllyColor = Colors->CfgColor(cfg->chams.allycolor);
 
 				float balance_brightness_with_nm = cfg->nightmode.enabled ? (float)((100 - (100 * (cfg->nightmode.amount * 0.001))) * 0.2) : 0;
-				ColorESP BalanceBrightness = ColorESP::Colors->CfgColor(Color{ (255.f / (cfg->chams.brightness / 10.f)) + balance_brightness_with_nm,
+				ColorESP BalanceBrightness = Colors->CfgColor(Color{ (255.f / (cfg->chams.brightness / 10.f)) + balance_brightness_with_nm,
 					(255.f / (cfg->chams.brightness / 10.f)) + balance_brightness_with_nm,
 					(255.f / (cfg->chams.brightness / 10.f)) + balance_brightness_with_nm, 255.f });
 
@@ -61,22 +58,22 @@ public:
 						}
 
 						if (!csgo->IsDangerZone() && mem->Read<int>(Entity + ofs->m_dwIndex) == mem->Read<int>(CSPlayerResource + ofs->m_iPlayerC4))
-							mem->Write(Entity + 0x70, ColorESP::Colors->CfgColor(cfg->chams.c4playercolor));
+							mem->Write(Entity + 0x70, Colors->CfgColor(cfg->chams.c4playercolor));
 						else if (mem->Read<bool>(Entity + ofs->m_bIsDefusing))
-							mem->Write(Entity + 0x70, ColorESP::Colors->CfgColor(cfg->chams.defusecolor));
+							mem->Write(Entity + 0x70, Colors->CfgColor(cfg->chams.defusecolor));
 						else
 							mem->Write(Entity + 0x70, csgo->IsInMyTeam(Entity) ?
 								cfg->chams.enemiesonly ? BalanceBrightness : AllyColor :
 								cfg->chams.health_based ?
-								ColorESP::Colors->CfgColor(Color{ (float)(abs((int)(255 - (Health * 2.55)))),
+								Colors->CfgColor(Color{ (float)(abs((int)(255 - (Health * 2.55)))),
 									(float)(255 - abs((int)(255 - (Health * 2.55)))), 0, cfg->chams.enemycolor.a }) :
 								EnemyColor);
 					}
 					else if (EntityClassID == CC4 || EntityClassID == CPlantedC4)
-						mem->Write(Entity + 0x70, ColorESP::Colors->CfgColor(cfg->chams.c4color));
+						mem->Write(Entity + 0x70, Colors->CfgColor(cfg->chams.c4color));
 					else if (EntityClassID == CPredictedViewModel)
 						mem->Write(Entity + 0x70, cfg->chams.viewmodel_chams ? LocalEntity.GetActiveWeapon() == WEAPON_C4 ?
-							ColorESP::Colors->BombColor() :
+							Colors->BombColor() :
 							AllyColor : BalanceBrightness);
 				}
 				if (!cfg->chams.modelambient) { ModelBrightnessReset(); continue; }

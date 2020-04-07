@@ -121,6 +121,7 @@ void Config::LoadConfig()
 
 	rcs.smooth = g_pFiles->ReadFloat("Settings", "RCS.smooth");
 	general_skin.knife = g_pFiles->ReadChar("SkinChanger", "Knife");
+	general_skin.auto_update = g_pFiles->ReadBool("SkinChanger", "AutoUpdate.Enable");
 	general_skin.knife_enable = g_pFiles->ReadBool("SkinChanger", "Knife.Enable");
 	general_skin.knife_skin_id = g_pFiles->ReadInt("SkinChanger", "Knife.SkinID");
 

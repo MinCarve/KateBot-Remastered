@@ -88,6 +88,7 @@ public:
 	
 	struct general_skin {
 		char* knife = NULL;
+		bool auto_update = false;
 		bool knife_enable = false;
 		int knife_skin_id = 569;
 	}general_skin;

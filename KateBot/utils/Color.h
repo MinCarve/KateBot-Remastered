@@ -247,8 +247,8 @@ public:
 
 	};
 
-	static Colors* Colors;
-
 private:
 	unsigned char _color[4];
 };
+
+extern ColorESP::Colors* Colors;

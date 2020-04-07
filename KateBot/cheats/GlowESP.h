@@ -57,30 +57,30 @@ public:
 
 									if (mem->Read<int>(GlowObject.Entity + ofs->m_dwIndex) == mem->Read<int>(CSPlayerResource + ofs->m_iPlayerC4) ||
 										isDefusing)
-										DrawGlow(EntityBase, ColorESP::Colors->Blue(cfg->glowesp.color.a), cfg->glowesp.onlyVisible);
+										DrawGlow(EntityBase, Colors->Blue(cfg->glowesp.color.a), cfg->glowesp.onlyVisible);
 									else {
 										if (cfg->glowesp.health_based) {
 											if (Health < 13)
-												DrawGlow(EntityBase, ColorESP::Colors->White(cfg->glowesp.color.a), cfg->glowesp.onlyVisible);
+												DrawGlow(EntityBase, Colors->White(cfg->glowesp.color.a), cfg->glowesp.onlyVisible);
 											else
-												DrawGlow(EntityBase, ColorESP::Colors->CfgColor(Color{ (float)(abs((int)(255 - (Health * 2.55)))),
+												DrawGlow(EntityBase, Colors->CfgColor(Color{ (float)(abs((int)(255 - (Health * 2.55)))),
 									(float)(255 - abs((int)(255 - (Health * 2.55)))), 0, cfg->glowesp.color.a }), cfg->glowesp.onlyVisible);
 										}
 										else
-											DrawGlow(EntityBase, ColorESP::Colors->CfgColor(cfg->glowesp.color), cfg->glowesp.onlyVisible);
+											DrawGlow(EntityBase, Colors->CfgColor(cfg->glowesp.color), cfg->glowesp.onlyVisible);
 									}
 								}
 							}
 						}
-						/*else if (ClassID == CBaseCSGrenadeProjectile) {
+						/*else if (ClassID == CBaseCSGrenadeProjectile) { // I don't understand, glowing bombs causes the game to crash.
 							mem->Read(mem->Read<DWORD>(GlowObject.Entity + 0x6C) + 0x4, this->ModelName, sizeof(char[64]));
 
 							std::string str(this->ModelName);
 
 							if (str.find("flashbang_dropped.mdl") != std::string::npos)
-								DrawGlow(EntityBase, ColorESP::Colors->White(), false);
+								DrawGlow(EntityBase, Colors->White(), false);
 							else if (str.find("fraggrenade_dropped.mdl") != std::string::npos)
-								DrawGlow(EntityBase, ColorESP::Colors->Red(), false);
+								DrawGlow(EntityBase, Colors->Red(), false);
 						}
 						else if (ClassID == CEconEntity && LocalEntity.GetTeamNum() == 3) {
 							mem->Read(mem->Read<DWORD>(GlowObject.Entity + 0x6C) + 0x4, this->ModelName, sizeof(char[64]));
@@ -88,27 +88,27 @@ public:
 							std::string str(this->ModelName);
 
 							if (str.find("defuser.mdl") != std::string::npos)
-								DrawGlow(EntityBase, ColorESP::Colors->Green(150), false);
+								DrawGlow(EntityBase, Colors->Green(150), false);
 						}
 						else if (ClassID == CPlantedC4) {
 							float BombTime = mem->Read<float>(GlowObject.Entity + ofs->m_flC4Blow) - csgo->GetCurTime();
 							BombTime = BombTime < 0.f ? 0.f : BombTime;
 
 							if (BombTime > 20)
-								this->PlantedC4Color = ColorESP::Colors->Green(150);
+								this->PlantedC4Color = Colors->Green(150);
 							else if (BombTime > 10 && BombTime <= 20)
-								this->PlantedC4Color = ColorESP::Colors->Orange(150);
+								this->PlantedC4Color = Colors->Orange(150);
 							else if (BombTime > 5 && BombTime <= 10)
-								this->PlantedC4Color = ColorESP::Colors->Red(150);
+								this->PlantedC4Color = Colors->Red(150);
 							else if (BombTime <= 5)
-								this->PlantedC4Color = ColorESP::Colors->White(150);
+								this->PlantedC4Color = Colors->White(150);
 
 							DrawGlow(EntityBase, this->PlantedC4Color, false);
 						}
 						else if (ClassID == CSmokeGrenadeProjectile)
-							DrawGlow(EntityBase, ColorESP::Colors->Gray(), false);
+							DrawGlow(EntityBase, Colors->Gray(), false);
 						else if (ClassID == CMolotovProjectile || ClassID == CIncendiaryGrenade)
-							DrawGlow(EntityBase, ColorESP::Colors->Orange(), false);*/
+							DrawGlow(EntityBase, Colors->Orange(), false);*/
 					}
 				}
 			}
